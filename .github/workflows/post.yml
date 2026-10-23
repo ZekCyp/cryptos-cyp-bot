@@ -1,13 +1,6 @@
 name: Cryptos.cyp otomatik paylaşım
 
 on:
-  schedule:
-    # Saatler UTC'dir (TSİ - 3). GitHub tam saatlerde birkaç dakika gecikebilir.
-    # Paylaşımlar ~09:00, ~13:00, ~18:00 ve ~22:00 TSİ'de düşer.
-    - cron: "47 5 * * *"
-    - cron: "47 9 * * *"
-    - cron: "47 14 * * *"
-    - cron: "47 18 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
