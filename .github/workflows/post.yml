@@ -4,8 +4,10 @@ on:
   schedule:
     # GitHub zamanlayıcısı UTC çalışır ve tam saatlerde 5-20 dk gecikebilir.
     # 05:47 UTC = 08:47 TSİ, 14:47 UTC = 17:47 TSİ  → paylaşımlar ~09:00 ve ~18:00'de düşer.
-    - cron: "47 5 * * *"
-    - cron: "47 14 * * *"
+      - cron: "47 5 * * *"
+       - cron: "47 9 * * *"
+       - cron: "47 14 * * *"
+       - cron: "47 18 * * *"
   workflow_dispatch:
     inputs:
       dry_run:
