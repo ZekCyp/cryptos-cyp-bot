@@ -33,6 +33,8 @@ VERİ DOĞRULUĞU (EN KRİTİK KURAL):
 - Hiçbir rakamı tahmin etme, uydurma, hesaplama veya toplama. Kaynakta yoksa rakam yazma.
 - Rakamları Türkçe biçimde yazabilirsin (ör. 1.2 billion -> 1,2 milyar $), değerin kendisini değiştirme.
 - Kaynaklardan uzun alıntı yapma; her şeyi kendi cümlelerinle yeniden ifade et.
+- "Rekor", "tarihi", "tüm zamanların", "en büyük" gibi nitelemeleri YALNIZCA kaynak metin bunu
+  açıkça söylüyorsa kullan; manşet, özet ve açıklamada aynı niteleme tutarlı olmalı.
 """
 
 SELECT_TASK = """GÖREV: Aşağıdaki son {hours} saatlik haber listesinden, küresel piyasalar için EN KRİTİK

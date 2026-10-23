@@ -124,7 +124,8 @@ def background_from_cloudflare(prompt: str) -> Image.Image | None:
         log.info("Cloudflare anahtarı yok, kodla üretilen arka plan kullanılacak.")
         return None
     url = f"https://api.cloudflare.com/client/v4/accounts/{acct}/ai/run/@cf/black-forest-labs/flux-1-schnell"
-    prompt = (prompt or "").strip()[:2000]
+    prompt = ((prompt or "").strip()[:1700] +
+              ", abstract composition, no screens with numbers, no typography, no characters, no watermark")
     attempts = ({"prompt": prompt, "steps": 6}, {"prompt": prompt})   # ikincisi: en sade istek
     try:
         for body in attempts:
@@ -177,12 +178,14 @@ def cover(img: Image.Image) -> Image.Image:
 
 
 def _overlay(base: Image.Image) -> Image.Image:
-    """Okunabilirlik için degrade karartma + ince terminal ızgarası."""
+    """Okunabilirlik için hafif bulanıklık + degrade karartma + ince terminal ızgarası.
+    Bulanıklık, yapay zekanın arka plana istemeden çizdiği anlamsız yazı/rakamları da gizler."""
+    base = base.filter(ImageFilter.GaussianBlur(3))
     ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(ov)
     for y in range(H):
         t = y / H
-        a = 150 if t < 0.45 else int(150 + (t - 0.45) / 0.55 * 95)   # alta doğru koyulaşır
+        a = 160 if t < 0.45 else int(160 + (t - 0.45) / 0.55 * 85)   # alta doğru koyulaşır
         if t < 0.08:
             a = 200
         d.line([(0, y), (W, y)], fill=NAVY + (min(a, 245),))
