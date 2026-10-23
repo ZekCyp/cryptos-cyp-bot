@@ -176,10 +176,10 @@ class Gemini:
         }
         last_err = None
         for model in self.models:
-            for attempt in range(3):
+            for attempt in range(2):
                 try:
                     r = requests.post(f"{API}/models/{model}:generateContent", headers=self.headers,
-                                      json=body, timeout=180)
+                                      json=body, timeout=90)
                 except requests.RequestException as exc:
                     last_err = str(exc)
                     time.sleep(5)
@@ -194,8 +194,8 @@ class Gemini:
                         last_err = f"{model}: geçersiz yanıt {exc}"
                         break
                 last_err = f"{model}: HTTP {r.status_code} {r.text[:300]}"
-                if r.status_code in (429, 500, 503) and attempt < 2:
-                    time.sleep(20 * (attempt + 1))
+                if r.status_code in (429, 500, 503) and attempt < 1:
+                    time.sleep(10)
                     continue
                 break  # 400/403/404: bu model kullanılamıyor, sıradakine geç
             log.warning("Model başarısız, sıradakine geçiliyor: %s", last_err)

@@ -119,15 +119,20 @@ def spaced_width(draw, text, fnt, spacing=2.0) -> float:
 
 # ------------------------------------------------------------------ Arka plan
 def background_from_cloudflare(prompt: str) -> Image.Image | None:
-    acct, token = os.getenv("CF_ACCOUNT_ID"), os.getenv("CF_API_TOKEN")
+    acct, token = (os.getenv("CF_ACCOUNT_ID") or "").strip(), (os.getenv("CF_API_TOKEN") or "").strip()
     if not (acct and token):
         log.info("Cloudflare anahtarı yok, kodla üretilen arka plan kullanılacak.")
         return None
     url = f"https://api.cloudflare.com/client/v4/accounts/{acct}/ai/run/@cf/black-forest-labs/flux-1-schnell"
+    prompt = (prompt or "").strip()[:2000]
+    attempts = ({"prompt": prompt, "steps": 6}, {"prompt": prompt})   # ikincisi: en sade istek
     try:
-        r = requests.post(url, headers={"Authorization": f"Bearer {token}"},
-                          json={"prompt": prompt, "steps": 6, "seed": random.randint(1, 2**31)},
-                          timeout=120)
+        for body in attempts:
+            r = requests.post(url, headers={"Authorization": f"Bearer {token.strip()}"},
+                              json=body, timeout=120)
+            if r.ok:
+                break
+            log.warning("Cloudflare yanıtı HTTP %s: %s", r.status_code, r.text[:400])
         r.raise_for_status()
         b64 = r.json()["result"]["image"]
         img = Image.open(io.BytesIO(base64.b64decode(b64))).convert("RGB")
