@@ -154,7 +154,43 @@ def _set_output(key: str, value: str) -> None:
             f.write(f"{key}={value}\n")
 
 
+def _save_outputs(post: dict, image, now: datetime) -> None:
+    stamp = now.strftime("%Y%m%d-%H%M")
+    config.POSTS_DIR.mkdir(exist_ok=True)
+    config.OUTPUT_DIR.mkdir(exist_ok=True)
+    img_rel = f"posts/{stamp}.jpg"
+    image.save(config.ROOT / img_rel, "JPEG", quality=config.JPEG_QUALITY, optimize=True)
+    post["image_path"] = img_rel
+    post["created_at"] = now.isoformat()
+    (config.OUTPUT_DIR / "post.json").write_text(json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8")
+    (config.OUTPUT_DIR / "caption.txt").write_text(post["caption"], encoding="utf-8")
+    if post.get("type") != "rates":
+        (config.OUTPUT_DIR / "post.md").write_text(build_markdown(post), encoding="utf-8")
+    _set_output("image_path", img_rel)
+    log.info("Hazır: %s | %s", img_rel, post["headline"])
+
+
+def wants_rates(now: datetime) -> bool:
+    """Günün ilk paylaşımı (09:00-09:59 TSİ) kur tablosudur. POST_MODE=kur/haber ile elle seçilebilir."""
+    mode = os.getenv("POST_MODE", "").strip().lower()
+    if mode in ("kur", "rates"):
+        return True
+    if mode in ("haber", "news"):
+        return False
+    return now.hour == 9
+
+
 def prepare() -> int:
+    now = datetime.now(TZ)
+    if wants_rates(now):
+        from . import rates
+        built = rates.build_post(now)
+        if built:
+            post, image = built
+            _save_outputs(post, image, now)
+            print(post["caption"])
+            return 0
+        log.warning("Kur tablosu üretilemedi, bu saatte haber paylaşımına geçiliyor.")
     history = load_history()
     news = [n for n in sources.fetch_news() if not is_repeat(n, history)]
     if len(news) < 3:
@@ -166,7 +202,7 @@ def prepare() -> int:
     news = news[:config.MAX_ITEMS_TO_MODEL]
     by_id = {n.id: n for n in news}
     market = sources.fetch_market_snapshot()
-    recent = [h["headline"] for h in history[-8:]]
+    recent = [h["headline"] for h in history if h.get("type") != "rates"][-8:]
 
     llm = writer.Gemini()
     post = None
@@ -222,20 +258,8 @@ def prepare() -> int:
         log.info("Borsa kodu etiketi: %s %+.2f%%", post["quote"]["symbol"], post["quote"]["change"])
 
     now = datetime.now(TZ)
-    stamp = now.strftime("%Y%m%d-%H%M")
     image = card.build_card(post, seed=int(now.timestamp()), when=now)
-    config.POSTS_DIR.mkdir(exist_ok=True)
-    config.OUTPUT_DIR.mkdir(exist_ok=True)
-    img_rel = f"posts/{stamp}.jpg"
-    image.save(config.ROOT / img_rel, "JPEG", quality=config.JPEG_QUALITY, optimize=True)
-
-    post["image_path"] = img_rel
-    post["created_at"] = now.isoformat()
-    (config.OUTPUT_DIR / "post.json").write_text(json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8")
-    (config.OUTPUT_DIR / "post.md").write_text(build_markdown(post), encoding="utf-8")
-    (config.OUTPUT_DIR / "caption.txt").write_text(post["caption"], encoding="utf-8")
-    _set_output("image_path", img_rel)
-    log.info("Hazır: %s | %s", img_rel, post["headline"])
+    _save_outputs(post, image, now)
     print(build_markdown(post))
     return 0
 
@@ -251,7 +275,7 @@ def publish(image_url: str) -> int:
     history = load_history()
     history.append({"ts": datetime.now(timezone.utc).isoformat(), "link": post["source_link"],
                     "title": post["source_title"], "headline": post["headline"],
-                    "image": post["image_path"], "media_id": media_id})
+                    "image": post["image_path"], "media_id": media_id, "type": post.get("type", "news")})
     save_history(history)
     return 0
 

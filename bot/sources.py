@@ -79,6 +79,8 @@ def fetch_news(window_hours: int = config.NEWS_WINDOW_HOURS) -> list[NewsItem]:
             summary = clean_text(entry.get("summary", "") or entry.get("description", ""))
             items.append(NewsItem(0, source, title, summary, entry.get("link", ""), published))
             count += 1
+            if count >= config.FEED_LIMITS.get(source, 999):
+                break
         log.info("RSS %-18s %d haber", source, count)
     items.sort(key=lambda n: n.published, reverse=True)
     for i, item in enumerate(items, start=1):
@@ -189,7 +191,9 @@ def _farside(asset: str) -> list[str]:
 _YAHOO = {"^GSPC": "S&P 500", "^IXIC": "Nasdaq Composite", "^SOX": "PHLX Yarı İletken Endeksi (SOX)",
           "NVDA": "NVIDIA", "TSM": "TSMC (ADR)", "ASML": "ASML", "AMD": "AMD",
           "DX-Y.NYB": "Dolar Endeksi (DXY)", "^TNX": "ABD 10Y tahvil faizi (x10)", "GC=F": "Altın vadeli",
-          "COIN": "Coinbase", "MSTR": "Strategy (MSTR)", "IBIT": "iShares Bitcoin Trust (IBIT)"}
+          "COIN": "Coinbase", "MSTR": "Strategy (MSTR)", "IBIT": "iShares Bitcoin Trust (IBIT)",
+          "BZ=F": "Brent petrol vadeli (USD/varil)", "^VIX": "VIX korku endeksi",
+          "^STOXX50E": "Euro Stoxx 50", "^N225": "Nikkei 225"}
 
 
 def _yahoo() -> list[str]:

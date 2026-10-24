@@ -27,10 +27,17 @@ FEEDS = {
     "Investing.com": "https://www.investing.com/rss/news_25.rss",
     "SEC Press": "https://www.sec.gov/news/pressreleases.rss",
     "Tom's Hardware": "https://www.tomshardware.com/feeds/all",
+    # Jeopolitik / genel gelişmeler (yalnızca piyasa etkisi ölçülebiliyorsa seçilir)
+    "BBC Business": "https://feeds.bbci.co.uk/news/business/rss.xml",
+    "BBC World": "https://feeds.bbci.co.uk/news/world/rss.xml",
+    "CNBC World": "https://www.cnbc.com/id/100727362/device/rss/rss.html",
 }
 
+# Genel haber akışları çok hacimli; finans/kripto haberlerini bastırmasın diye sınırlı sayıda alınır
+FEED_LIMITS = {"BBC Business": 12, "BBC World": 12, "CNBC World": 12}
+
 NEWS_WINDOW_HOURS = int(os.getenv("NEWS_WINDOW_HOURS", "24"))
-MAX_ITEMS_TO_MODEL = 45          # modele gönderilecek en fazla haber
+MAX_ITEMS_TO_MODEL = 60          # modele gönderilecek en fazla haber
 MIN_ARTICLE_CHARS = 900          # bundan kısa metin = ücretli/okunamayan haber, atlanır
 HISTORY_DAYS = 14                # aynı haberi tekrar paylaşmama süresi
 

@@ -35,12 +35,26 @@ VERİ DOĞRULUĞU (EN KRİTİK KURAL):
 - Kaynaklardan uzun alıntı yapma; her şeyi kendi cümlelerinle yeniden ifade et.
 - "Rekor", "tarihi", "tüm zamanların", "en büyük" gibi nitelemeleri YALNIZCA kaynak metin bunu
   açıkça söylüyorsa kullan; manşet, özet ve açıklamada aynı niteleme tutarlı olmalı.
+
+JEOPOLİTİK, SİYASİ VE SKANDAL HABERLERİ:
+- Bu haberleri yalnızca PİYASA ETKİSİ üzerinden anlat: petrol, altın, endeksler, VIX, dolar, kripto
+  nasıl tepki verdi. Olayın kendisini kısa ve nötr bir cümleyle aktar.
+- Savaş ve çatışmalarda can kaybı, şiddet ayrıntısı veya duygusal dil kullanma; taraf tutma.
+- Siyasi gelişmelerde (seçim, yaptırım, ticaret politikası) yorum ve değerlendirme yapma; yalnızca
+  piyasaların fiyatladığı etkiyi anlat.
+- Skandal, soruşturma ve suçlamalarda kaynağın kullandığı kesinlik düzeyini koru: kanıtlanmamış
+  bir şeyi kesin gibi yazma; "iddia", "soruşturma", "suçlama" gibi doğru ifadeleri kullan. Kişileri
+  aşağılayan veya hüküm veren ifadeler kullanma.
 """
 
 SELECT_TASK = """GÖREV: Aşağıdaki son {hours} saatlik haber listesinden, küresel piyasalar için EN KRİTİK
 tek haberi seç. Öncelik sırası: ETF net giriş-çıkışları ve kurumsal akışlar, büyük regülasyon
 kararları, merkez bankası/makro veriler, çip sektörü bilançoları ve yapay zeka yatırımları,
-önemli on-chain veriler. Somut ve doğrulanabilir rakam içeren haberleri tercih et. Spekülatif,
+önemli on-chain veriler, PİYASAYI HAREKET ETTİREN jeopolitik/siyasi gelişmeler ve büyük şirket
+skandalları (savaş, yaptırım, seçim, ticaret savaşı, büyük soruşturmalar). Jeopolitik veya skandal
+haberini YALNIZCA piyasa verisinde ya da haber metninde ölçülebilir bir piyasa tepkisi varsa seç
+(ör. petrol, altın, endeks, VIX veya kripto belirgin hareket etti); piyasa bağlantısı olmayan genel
+dünya haberlerini seçme. Somut ve doğrulanabilir rakam içeren haberleri tercih et. Spekülatif,
 tek bir küçük altcoin'e dair, sponsorlu veya "fiyat tahmini" türü haberleri seçme.
 
 Bu sayfada son paylaşılan başlıklar (aynı konuyu TEKRAR SEÇME, farklı bir gelişme seç):
@@ -57,7 +71,7 @@ WRITE_TASK = """GÖREV: Seçilen haber için paylaşıma hazır iki parçalı In
 ALANLAR:
 - category: Kategori rozeti, İngilizce ve büyük harf. Şunlardan biri ya da benzeri:
   "CRYPTOCURRENCY & WEB3", "GLOBAL MARKETS & AI", "INSTITUTIONAL FLOWS & ETF", "SEMICONDUCTORS & AI",
-  "MACRO & CENTRAL BANKS", "REGULATION & POLICY".
+  "MACRO & CENTRAL BANKS", "REGULATION & POLICY", "GEOPOLITICS & MARKETS", "CORPORATE & LEGAL".
 - headline: Türkçe manşet, 5-10 kelime, net ve vurucu ama clickbait değil.
 - metric1: Haberin ana rakamı. label kısa (ör. "24 Saatlik Net Akış"), value en fazla 22 karakter
   (ör. "+523 Milyon $", "%4,8" veya "−%0,7"). Yüzdeyi Türkçe yaz: % işareti rakamdan ÖNCE gelir,
@@ -75,8 +89,12 @@ ALANLAR:
     regülasyon / SEC / yasa -> neoclassical government building columns at dusk
     merkez bankası / faiz -> grand marble bank hall or heavy vault door
     enerji / petrol -> oil refinery at night with industrial lights
+    jeopolitik / ticaret -> oil tanker on a calm sea at dusk, or container port cranes at night
+    yaptırım / küresel gerilim -> dark world map with glowing trade routes, abstract
+    şirket skandalı / dava -> empty glass corporate lobby at night, or courthouse columns
   Sinematik ışık, sığ alan derinliği; renk paleti koyu lacivert-füme, camgöbeği ve turuncu vurgu ışıkları.
   Marka/şirket adı, logo, metin, harf, rakam, insan yüzü KESİNLİKLE İÇERMEMELİ; şirket adı yazma.
+  Silah, asker, patlama, yangın, yaralı, gerçek kişi, bayrak veya şiddet çağrıştıran öğe ASLA kullanma.
 - ticker: Haberin ANA KONUSU tek bir belirli halka açık şirket, ETF veya kripto varlıksa onun Yahoo Finance
   sembolü (ör. NVDA, TSM, ASML, AMD, INTC, MU, AVGO, COIN, MSTR, IBIT, SOXL, BTC-USD, ETH-USD, SOL-USD).
   Genel piyasa, makro veya birden çok şirketi kapsayan haberse boş bırak (""). Haberde adı geçmeyen

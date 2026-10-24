@@ -127,7 +127,8 @@ def background_from_cloudflare(prompt: str) -> Image.Image | None:
         return None
     url = f"https://api.cloudflare.com/client/v4/accounts/{acct}/ai/run/@cf/black-forest-labs/flux-1-schnell"
     prompt = ((prompt or "").strip()[:1700] +
-              ", cinematic, no screens with numbers, no typography, no brand logos, no characters, no watermark")
+              ", cinematic, no screens with numbers, no typography, no brand logos, no characters, no watermark, "
+              "no people, no weapons, no violence")
     attempts = ({"prompt": prompt, "steps": 6}, {"prompt": prompt})   # ikincisi: en sade istek
     try:
         for body in attempts:
