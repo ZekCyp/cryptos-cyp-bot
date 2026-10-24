@@ -182,7 +182,7 @@ def cover(img: Image.Image) -> Image.Image:
 def _overlay(base: Image.Image) -> Image.Image:
     """Okunabilirlik için hafif bulanıklık + degrade karartma + ince terminal ızgarası.
     Bulanıklık, yapay zekanın arka plana istemeden çizdiği anlamsız yazı/rakamları da gizler."""
-    base = base.filter(ImageFilter.GaussianBlur(3))
+    base = base.filter(ImageFilter.GaussianBlur(5))
     ov = Image.new("RGBA", (W, H), (0, 0, 0, 0))
     d = ImageDraw.Draw(ov)
     for y in range(H):

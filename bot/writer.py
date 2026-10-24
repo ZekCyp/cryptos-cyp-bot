@@ -60,7 +60,8 @@ ALANLAR:
   "MACRO & CENTRAL BANKS", "REGULATION & POLICY".
 - headline: Türkçe manşet, 5-10 kelime, net ve vurucu ama clickbait değil.
 - metric1: Haberin ana rakamı. label kısa (ör. "24 Saatlik Net Akış"), value en fazla 22 karakter
-  (ör. "+523 Milyon $" veya "%4,8").
+  (ör. "+523 Milyon $", "%4,8" veya "−%0,7"). Yüzdeyi Türkçe yaz: % işareti rakamdan ÖNCE gelir,
+  ondalık ayıracı virgüldür. Tırnak, kesme işareti veya açıklama ekleme; yalnızca değeri yaz.
 - metric2: Tarihsel karşılaştırma veya kritik eşik verisi; aynı biçim. Kaynakta yoksa piyasa
   verisinden ilgili bir değer kullan.
 - summary: Haberin piyasa dinamiklerine etkisini anlatan 2-3 cümlelik hap analiz (en fazla 380 karakter).
@@ -76,9 +77,10 @@ ALANLAR:
     enerji / petrol -> oil refinery at night with industrial lights
   Sinematik ışık, sığ alan derinliği; renk paleti koyu lacivert-füme, camgöbeği ve turuncu vurgu ışıkları.
   Marka/şirket adı, logo, metin, harf, rakam, insan yüzü KESİNLİKLE İÇERMEMELİ; şirket adı yazma.
-- ticker: Haber tek bir belirli halka açık şirket, ETF veya kripto varlıkla ilgiliyse onun Yahoo Finance
+- ticker: Haberin ANA KONUSU tek bir belirli halka açık şirket, ETF veya kripto varlıksa onun Yahoo Finance
   sembolü (ör. NVDA, TSM, ASML, AMD, INTC, MU, AVGO, COIN, MSTR, IBIT, SOXL, BTC-USD, ETH-USD, SOL-USD).
-  Genel piyasa, makro veya birden çok şirketi kapsayan haberse boş bırak ("").
+  Genel piyasa, makro veya birden çok şirketi kapsayan haberse boş bırak (""). Haberde adı geçmeyen
+  bir şirketi (ör. sektör haberi için Nvidia) ASLA yazma.
 - hook: Okuyucuyu durduran, piyasa psikolojisini özetleyen 1-2 cümle.
 - context: Haberin arka planı ve net finansal veriler (2-4 cümle).
 - impacts.institutional: Kurumsal Oyuncular ve Likidite etkisi (1-2 cümle).

@@ -54,6 +54,52 @@ def is_repeat(item: sources.NewsItem, history: list[dict]) -> bool:
     return False
 
 
+# ---------------------------------------------------------- Biçim düzeltmeleri
+_STRAY = "'\"`’‘“”´"
+_PCT_AFTER = re.compile(r"^([+\-−]?)\s*(\d[\d.,]*)\s*%\s*(\+?)$")      # -0,7%  -> −%0,7
+_PCT_BEFORE = re.compile(r"^([+\-−]?)\s*%\s*([+\-−]?)\s*(\d[\d.,]*)\s*(\+?)$")  # %-0.7 -> −%0,7
+
+
+def format_value(v: str) -> str:
+    """Metrik değerini kart için temizler: fazladan işaretleri atar, yüzdeyi Türkçe biçime getirir."""
+    v = card.strip_emoji(v)
+    v = "".join(ch for ch in v if ch not in _STRAY).strip()
+    m = _PCT_AFTER.match(v)
+    if m:
+        sign, num, plus = m.groups()
+    else:
+        m = _PCT_BEFORE.match(v)
+        if not m:
+            return "−" + v[1:] if v.startswith("-") else v
+        sign, sign2, num, plus = m.groups()
+        sign = sign or sign2
+    if re.fullmatch(r"\d+\.\d{1,2}", num):     # 0.7 -> 0,7 (binlik ayırıcı değil, ondalık)
+        num = num.replace(".", ",")
+    sign = {"-": "−", "−": "−", "+": "+"}.get(sign, "")
+    return f"{sign}%{num}{plus}"
+
+
+TICKER_NAMES = {
+    "NVDA": ["nvidia"], "TSM": ["tsmc", "taiwan semiconductor"], "ASML": ["asml"], "AMD": ["amd"],
+    "INTC": ["intel"], "MU": ["micron"], "AVGO": ["broadcom"], "QCOM": ["qualcomm"], "ARM": ["arm holdings"],
+    "MSFT": ["microsoft"], "GOOGL": ["alphabet", "google"], "AMZN": ["amazon"], "META": ["meta platforms"],
+    "AAPL": ["apple"], "TSLA": ["tesla"], "ORCL": ["oracle"], "CRWV": ["coreweave"], "NBIS": ["nebius"],
+    "IREN": ["iren"], "COIN": ["coinbase"], "MSTR": ["strategy", "microstrategy"], "HOOD": ["robinhood"],
+    "IBIT": ["ibit", "ishares bitcoin"], "SOXL": ["soxl"], "BTC-USD": ["bitcoin", "btc"],
+    "ETH-USD": ["ethereum", "ether", "eth"], "SOL-USD": ["solana"], "XRP-USD": ["xrp", "ripple"],
+}
+
+
+def ticker_is_relevant(ticker: str, text: str) -> bool:
+    """Etiket yalnızca şirket/varlık haberin başlığında veya metninde geçiyorsa gösterilir."""
+    t = (ticker or "").strip().upper()
+    if not t:
+        return False
+    low = text.lower()
+    names = TICKER_NAMES.get(t, []) + [t.removesuffix("-USD").lower()]
+    return any(re.search(rf"(?<![\w]){re.escape(n)}(?![\w])", low) for n in names)
+
+
 # --------------------------------------------------------------- Metin çıktısı
 def build_caption(post: dict) -> str:
     imp = post["impacts"]
@@ -92,7 +138,7 @@ def normalize(post: dict, story: sources.NewsItem) -> dict:
     post["category"] = card.strip_emoji(post["category"]).upper().strip()
     for k in ("metric1", "metric2"):
         post[k]["label"] = card.strip_emoji(post[k]["label"]).rstrip(":").strip()
-        post[k]["value"] = card.strip_emoji(post[k]["value"]).strip()
+        post[k]["value"] = format_value(post[k]["value"])
     post["source_name"] = story.source
     post["source_link"] = story.link
     post["source_title"] = story.title
@@ -154,6 +200,7 @@ def prepare() -> int:
                 errors = validate.check_post(draft, source_text)
                 if not errors:
                     post = draft
+                    story_text = f"{story.title} {story.summary} {article}"
                     break
                 log.warning("Taslak %d kontrolden geçemedi: %s", attempt + 1, " | ".join(errors))
                 feedback = errors
@@ -166,7 +213,11 @@ def prepare() -> int:
         log.error("Doğrulamadan geçen içerik üretilemedi; yanlış veri yayınlamamak için paylaşım iptal.")
         return 1
 
-    post["quote"] = sources.fetch_quote(post.get("ticker", "")) if post.get("ticker") else None
+    ticker = post.get("ticker", "")
+    if ticker and not ticker_is_relevant(ticker, story_text):
+        log.info("Borsa kodu %s haber metninde geçmiyor, etiket gösterilmeyecek.", ticker)
+        ticker = ""
+    post["quote"] = sources.fetch_quote(ticker) if ticker else None
     if post["quote"]:
         log.info("Borsa kodu etiketi: %s %+.2f%%", post["quote"]["symbol"], post["quote"]["change"])
 
