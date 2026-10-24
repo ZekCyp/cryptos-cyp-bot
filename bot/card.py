@@ -31,6 +31,8 @@ AMBER = (245, 184, 61)
 WHITE = (241, 245, 250)
 GREY = (150, 164, 186)
 DIM = (92, 106, 130)
+GREEN = (52, 211, 153)
+RED = (248, 113, 113)
 
 TR_MONTHS = ["OCAK", "ŞUBAT", "MART", "NİSAN", "MAYIS", "HAZİRAN", "TEMMUZ", "AĞUSTOS", "EYLÜL",
              "EKİM", "KASIM", "ARALIK"]
@@ -125,7 +127,7 @@ def background_from_cloudflare(prompt: str) -> Image.Image | None:
         return None
     url = f"https://api.cloudflare.com/client/v4/accounts/{acct}/ai/run/@cf/black-forest-labs/flux-1-schnell"
     prompt = ((prompt or "").strip()[:1700] +
-              ", abstract composition, no screens with numbers, no typography, no characters, no watermark")
+              ", cinematic, no screens with numbers, no typography, no brand logos, no characters, no watermark")
     attempts = ({"prompt": prompt, "steps": 6}, {"prompt": prompt})   # ikincisi: en sade istek
     try:
         for body in attempts:
@@ -240,6 +242,22 @@ def render_card(post: dict, background: Image.Image, when: datetime | None = Non
         y += line_h
     y += 22
     d.rectangle((M, y, M + 110, y + 6), fill=CYAN + (255,))
+
+    # Borsa kodu etiketi (ör. NVDA  −%3,24) — yalnızca şirket/varlık haberlerinde
+    q = post.get("quote")
+    if q:
+        up = q["change"] >= 0
+        color = GREEN if up else RED
+        chg = f"{'+' if up else '−'}%{abs(q['change']):.2f}".replace(".", ",")
+        f_sym, f_chg = font("ExtraBold", 30), font("Bold", 30)
+        sw, cw = d.textlength(q["symbol"], font=f_sym), d.textlength(chg, font=f_chg)
+        bw2 = int(sw + cw + 28 * 2 + 22)
+        bx1, by0 = W - M, y + 30
+        bx0 = bx1 - bw2
+        d.rounded_rectangle((bx0, by0, bx1, by0 + 60), radius=12, fill=PANEL + (225,),
+                            outline=color + (160,), width=2)
+        d.text((bx0 + 28, by0 + 13), q["symbol"], font=f_sym, fill=WHITE + (255,))
+        d.text((bx0 + 28 + sw + 22, by0 + 13), chg, font=f_chg, fill=color + (255,))
 
     # Alt bölüm aşağıdan yukarıya yerleştirilir
     footer_y = H - M - 34

@@ -64,9 +64,21 @@ ALANLAR:
 - metric2: Tarihsel karşılaştırma veya kritik eşik verisi; aynı biçim. Kaynakta yoksa piyasa
   verisinden ilgili bir değer kullan.
 - summary: Haberin piyasa dinamiklerine etkisini anlatan 2-3 cümlelik hap analiz (en fazla 380 karakter).
-- image_prompt: İngilizce, Flux için arka plan promptu. Koyu lacivert-füme palet, siberpunk/finans
-  terminali estetiği, net grafik çizgileri ve neon veri akışları, haberin temasına uygun soyut öğe.
-  Metin, harf, rakam, logo, insan yüzü İÇERMEMELİ. Sonuna şunu ekle: "no text, no letters, no logos".
+- image_prompt: İngilizce, Flux için arka plan promptu. Haberin konusunu SOMUT ve sinematik bir SAHNE
+  ile anlat; her haberde farklı bir sahne olsun. Örnekler:
+    çip / yapay zeka -> extreme macro close-up of a silicon wafer or processor die, glowing circuit traces
+    veri merkezi / AI yatırımı -> long corridor of server racks with blue LED light
+    ETF / kurumsal akış -> abstract streams of light flowing between glass towers of a financial district
+    borsa / hisse -> empty trading floor at night with blurred screens
+    Bitcoin / kripto -> a physical metallic coin with circuit-engraved surface on dark stone
+    regülasyon / SEC / yasa -> neoclassical government building columns at dusk
+    merkez bankası / faiz -> grand marble bank hall or heavy vault door
+    enerji / petrol -> oil refinery at night with industrial lights
+  Sinematik ışık, sığ alan derinliği; renk paleti koyu lacivert-füme, camgöbeği ve turuncu vurgu ışıkları.
+  Marka/şirket adı, logo, metin, harf, rakam, insan yüzü KESİNLİKLE İÇERMEMELİ; şirket adı yazma.
+- ticker: Haber tek bir belirli halka açık şirket, ETF veya kripto varlıkla ilgiliyse onun Yahoo Finance
+  sembolü (ör. NVDA, TSM, ASML, AMD, INTC, MU, AVGO, COIN, MSTR, IBIT, SOXL, BTC-USD, ETH-USD, SOL-USD).
+  Genel piyasa, makro veya birden çok şirketi kapsayan haberse boş bırak ("").
 - hook: Okuyucuyu durduran, piyasa psikolojisini özetleyen 1-2 cümle.
 - context: Haberin arka planı ve net finansal veriler (2-4 cümle).
 - impacts.institutional: Kurumsal Oyuncular ve Likidite etkisi (1-2 cümle).
@@ -115,9 +127,10 @@ WRITE_SCHEMA = {
                                    "retail": {"type": "STRING"}},
                     "required": ["institutional", "price", "retail"]},
         "cta": {"type": "STRING"},
+        "ticker": {"type": "STRING"},
     },
     "required": ["category", "headline", "metric1", "metric2", "summary", "image_prompt", "hook",
-                 "context", "impacts", "cta"],
+                 "context", "impacts", "cta", "ticker"],
 }
 
 

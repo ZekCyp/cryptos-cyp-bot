@@ -31,6 +31,7 @@ FEEDS = {
 
 NEWS_WINDOW_HOURS = int(os.getenv("NEWS_WINDOW_HOURS", "24"))
 MAX_ITEMS_TO_MODEL = 45          # modele gönderilecek en fazla haber
+MIN_ARTICLE_CHARS = 900          # bundan kısa metin = ücretli/okunamayan haber, atlanır
 HISTORY_DAYS = 14                # aynı haberi tekrar paylaşmama süresi
 
 # Instagram Graph API (Instagram Login)

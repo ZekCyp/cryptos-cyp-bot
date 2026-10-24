@@ -123,34 +123,52 @@ def prepare() -> int:
     recent = [h["headline"] for h in history[-8:]]
 
     llm = writer.Gemini()
-    sel = writer.select_story(llm, "\n".join(n.for_prompt() for n in news), market, recent)
-    log.info("Seçim: #%s (yedek #%s) — %s", sel["selected_id"], sel["runner_up_id"], sel["reason"])
-
-    candidates = [by_id[i] for i in (sel["selected_id"], sel["runner_up_id"]) if i in by_id]
-    if not candidates:
-        candidates = news[:2]
-    related_items = [by_id[i] for i in sel.get("related_ids", []) if i in by_id][:5]
-    related = "\n".join(f"- ({r.source}) {r.title}: {r.summary[:400]}" for r in related_items)
-
     post = None
-    for story in candidates:
-        article = sources.fetch_article_text(story.link)
-        source_text = "\n".join([story.title, story.summary, article, related, market])
-        feedback = None
-        for attempt in range(3):
-            draft = normalize(writer.write_post(llm, story, article, related, market, feedback), story)
-            errors = validate.check_post(draft, source_text)
-            if not errors:
-                post = draft
+    excluded: set[int] = set()
+    for round_no in range(2):  # ilk seçimdeki haberlerin metni okunamazsa bir kez yeniden seçilir
+        pool = [n for n in news if n.id not in excluded]
+        if not pool:
+            break
+        sel = writer.select_story(llm, "\n".join(n.for_prompt() for n in pool), market, recent)
+        log.info("Seçim %d: #%s (yedek #%s) — %s", round_no + 1, sel["selected_id"], sel["runner_up_id"],
+                 sel["reason"])
+        candidates = [by_id[i] for i in (sel["selected_id"], sel["runner_up_id"])
+                      if i in by_id and i not in excluded]
+        if not candidates:
+            candidates = pool[:2]
+        related_items = [by_id[i] for i in sel.get("related_ids", []) if i in by_id][:5]
+        related = "\n".join(f"- ({r.source}) {r.title}: {r.summary[:400]}" for r in related_items)
+
+        for story in candidates:
+            excluded.add(story.id)
+            article = sources.fetch_article_text(story.link)
+            if len(article) < config.MIN_ARTICLE_CHARS:
+                # Ücretli/kapalı içerik: model yalnızca başlığı görür, ana rakamlara ulaşamaz.
+                log.warning("Haber metni okunamadı (%d karakter, muhtemelen ücretli içerik), atlanıyor: %s",
+                            len(article), story.title)
+                continue
+            source_text = "\n".join([story.title, story.summary, article, related, market])
+            feedback = None
+            for attempt in range(3):
+                draft = normalize(writer.write_post(llm, story, article, related, market, feedback), story)
+                errors = validate.check_post(draft, source_text)
+                if not errors:
+                    post = draft
+                    break
+                log.warning("Taslak %d kontrolden geçemedi: %s", attempt + 1, " | ".join(errors))
+                feedback = errors
+            if post:
                 break
-            log.warning("Taslak %d kontrolden geçemedi: %s", attempt + 1, " | ".join(errors))
-            feedback = errors
+            log.warning("Haber atlanıyor, yedek habere geçiliyor: %s", story.title)
         if post:
             break
-        log.warning("Haber atlanıyor, yedek habere geçiliyor: %s", story.title)
     if not post:
         log.error("Doğrulamadan geçen içerik üretilemedi; yanlış veri yayınlamamak için paylaşım iptal.")
         return 1
+
+    post["quote"] = sources.fetch_quote(post.get("ticker", "")) if post.get("ticker") else None
+    if post["quote"]:
+        log.info("Borsa kodu etiketi: %s %+.2f%%", post["quote"]["symbol"], post["quote"]["change"])
 
     now = datetime.now(TZ)
     stamp = now.strftime("%Y%m%d-%H%M")

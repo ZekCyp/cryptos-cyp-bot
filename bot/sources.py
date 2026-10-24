@@ -209,6 +209,29 @@ def _yahoo() -> list[str]:
     return lines
 
 
+_TICKER_RE = re.compile(r"^[A-Z0-9][A-Z0-9.\-^=]{0,11}$")
+
+
+def fetch_quote(symbol: str) -> dict | None:
+    """Kart etiketi için tek bir sembolün son fiyatı ve günlük değişimi (Yahoo Finance).
+    Rakam modelden değil doğrudan veri kaynağından gelir; alınamazsa etiket gösterilmez."""
+    symbol = (symbol or "").strip().upper()
+    if not _TICKER_RE.match(symbol):
+        return None
+    try:
+        r = SESSION.get(f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}",
+                        params={"range": "5d", "interval": "1d"}, timeout=config.HTTP_TIMEOUT)
+        res = r.json()["chart"]["result"][0]
+        closes = [c for c in res["indicators"]["quote"][0]["close"] if c is not None]
+        if len(closes) < 2:
+            return None
+        return {"symbol": symbol.removesuffix("-USD"), "last": closes[-1],
+                "change": (closes[-1] / closes[-2] - 1) * 100}
+    except Exception as exc:
+        log.warning("Sembol verisi alınamadı (%s): %s", symbol, exc)
+        return None
+
+
 def fetch_market_snapshot() -> str:
     lines: list[str] = []
     for name, fn in (("CoinGecko", _coingecko), ("Korku&Açgözlülük", _fear_greed),
