@@ -82,5 +82,14 @@
     "image": "posts/20261025-1801.jpg",
     "media_id": "17929539831181657",
     "type": "news"
+  },
+  {
+    "ts": "2026-10-25T18:01:57.669520+00:00",
+    "link": "https://www.tomshardware.com/pc-components/gpus/nvidia-discusses-usd2-000-per-gpu-annual-software-fee-for-running-agents-on-ai-infrastructure-firm-already-charges-more-than-twice-that-amount-for-its-ai-enterprise-software-platform",
+    "title": "Nvidia discusses $2,000-per-GPU annual fee for software that 'runs agents on AI factories'",
+    "headline": "YAPAY ZEKA FABRİKALARI İÇİN YILLIK YAZILIM ÜCRETİ GÜNDEMDE",
+    "image": "posts/20261025-2101.jpg",
+    "media_id": "18116168180035262",
+    "type": "news"
   }
 ]
