@@ -100,5 +100,14 @@
     "image": "posts/20261026-0900.jpg",
     "media_id": "18638407060051111",
     "type": "rates"
+  },
+  {
+    "ts": "2026-10-26T10:02:03.916480+00:00",
+    "link": "https://www.cnbc.com/2026/10/26/spacex-closes-40-billion-debt-deal-for-ai-chips-elon-musk-.html",
+    "title": "SpaceX closes $40 billion debt deal for AI chips, Elon Musk says",
+    "headline": "SPACEX YAPAY ZEKA ÇİPLERİ İÇİN MİLYARLARCA DOLAR BORÇLANDI",
+    "image": "posts/20261026-1301.jpg",
+    "media_id": "18090413672682878",
+    "type": "news"
   }
 ]
