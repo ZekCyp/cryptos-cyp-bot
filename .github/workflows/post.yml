@@ -41,33 +41,40 @@ jobs:
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
         run: python -m bot.main prepare
 
-      - name: Görseli herkese açık adrese yükle (media dalı)
+      - name: Görselleri herkese açık adrese yükle (media dalı)
         id: media
         if: env.DRY_RUN != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          IMG="${{ steps.prep.outputs.image_path }}"
-          NAME="$(basename "$IMG")"
           TMP="$(mktemp -d)"
-          cp "$IMG" "$TMP/$NAME"
+          NAMES=""
+          while read -r IMG; do
+            [ -n "$IMG" ] || continue
+            cp "$IMG" "$TMP/"
+            NAMES="$NAMES $(basename "$IMG")"
+          done < output/images.txt
           cd "$TMP"
           git init -q -b media
           git config user.name "cryptos-bot"
           git config user.email "cryptos-bot@users.noreply.github.com"
-          git add "$NAME" && git commit -qm "media $NAME"
+          git add -A && git commit -qm "media$NAMES"
           git push -qf "https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git" media
           SHA="$(git rev-parse HEAD)"
-          URL="https://cdn.jsdelivr.net/gh/${{ github.repository }}@${SHA}/${NAME}"
-          for i in $(seq 1 12); do
-            CT="$(curl -sIL -o /dev/null -w '%{http_code} %{content_type}' "$URL" || true)"
-            echo "jsDelivr: $CT"
-            [[ "$CT" == 200\ image/jpeg* ]] && break
-            sleep 5
+          BASE="https://cdn.jsdelivr.net/gh/${{ github.repository }}@${SHA}/"
+          OK=1
+          for N in $NAMES; do
+            for i in $(seq 1 12); do
+              CT="$(curl -sIL -o /dev/null -w '%{http_code} %{content_type}' "$BASE$N" || true)"
+              echo "jsDelivr $N: $CT"
+              [[ "$CT" == 200\ image/jpeg* ]] && break
+              sleep 5
+            done
+            [[ "$CT" == 200\ image/jpeg* ]] || OK=0
           done
-          [[ "$CT" == 200\ image/jpeg* ]] || URL="https://raw.githubusercontent.com/${{ github.repository }}/${SHA}/${NAME}"
-          echo "url=$URL" >> "$GITHUB_OUTPUT"
-          echo "Görsel adresi: $URL"
+          [ "$OK" = 1 ] || BASE="https://raw.githubusercontent.com/${{ github.repository }}/${SHA}/"
+          echo "url=$BASE" >> "$GITHUB_OUTPUT"
+          echo "Görsel klasörü: $BASE"
 
       - name: Instagram'da yayınla
         if: env.DRY_RUN != 'true'
