@@ -75,13 +75,10 @@ def keep_token_alive() -> str:
         return token
 
 
-def publish_image(image_url: str, caption: str) -> str:
-    token = keep_token_alive()
+def _publish(params: dict, token: str) -> str:
     user_id = os.environ["IG_USER_ID"]
     auth = {"Authorization": f"Bearer {token}"}
-
-    container = _check(requests.post(f"{BASE}/{user_id}/media", headers=auth,
-                                     data={"image_url": image_url, "caption": caption}, timeout=60))["id"]
+    container = _check(requests.post(f"{BASE}/{user_id}/media", headers=auth, data=params, timeout=60))["id"]
     log.info("Medya kapsayıcısı oluşturuldu: %s", container)
 
     for _ in range(30):  # Instagram görseli kendi sunucusuna çekene kadar bekle
@@ -98,5 +95,27 @@ def publish_image(image_url: str, caption: str) -> str:
 
     media_id = _check(requests.post(f"{BASE}/{user_id}/media_publish", headers=auth,
                                     data={"creation_id": container}, timeout=60))["id"]
-    log.info("Instagram'da yayınlandı. Medya kimliği: %s", media_id)
+    return media_id
+
+
+_TOKEN: str | None = None
+
+
+def _token() -> str:
+    global _TOKEN
+    if _TOKEN is None:
+        _TOKEN = keep_token_alive()
+    return _TOKEN
+
+
+def publish_image(image_url: str, caption: str) -> str:
+    media_id = _publish({"image_url": image_url, "caption": caption}, _token())
+    log.info("Gönderi Instagram'da yayınlandı. Medya kimliği: %s", media_id)
+    return media_id
+
+
+def publish_story(image_url: str) -> str:
+    """9:16 görseli 24 saatlik hikâye olarak yayınlar."""
+    media_id = _publish({"image_url": image_url, "media_type": "STORIES"}, _token())
+    log.info("Hikâye Instagram'da yayınlandı. Medya kimliği: %s", media_id)
     return media_id

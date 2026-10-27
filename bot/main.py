@@ -12,6 +12,7 @@ import logging
 import os
 import re
 import sys
+from pathlib import Path
 from datetime import datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
@@ -154,20 +155,27 @@ def _set_output(key: str, value: str) -> None:
             f.write(f"{key}={value}\n")
 
 
-def _save_outputs(post: dict, image, now: datetime) -> None:
+def _save_outputs(post: dict, image, now: datetime, story_image=None) -> None:
     stamp = now.strftime("%Y%m%d-%H%M")
     config.POSTS_DIR.mkdir(exist_ok=True)
     config.OUTPUT_DIR.mkdir(exist_ok=True)
     img_rel = f"posts/{stamp}.jpg"
     image.save(config.ROOT / img_rel, "JPEG", quality=config.JPEG_QUALITY, optimize=True)
+    images = [img_rel]
     post["image_path"] = img_rel
+    if story_image is not None:
+        story_rel = f"posts/{stamp}-story.jpg"
+        story_image.save(config.ROOT / story_rel, "JPEG", quality=config.JPEG_QUALITY, optimize=True)
+        post["story_image_path"] = story_rel
+        images.append(story_rel)
     post["created_at"] = now.isoformat()
     (config.OUTPUT_DIR / "post.json").write_text(json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8")
     (config.OUTPUT_DIR / "caption.txt").write_text(post["caption"], encoding="utf-8")
+    (config.OUTPUT_DIR / "images.txt").write_text("\n".join(images) + "\n", encoding="utf-8")
     if post.get("type") != "rates":
         (config.OUTPUT_DIR / "post.md").write_text(build_markdown(post), encoding="utf-8")
     _set_output("image_path", img_rel)
-    log.info("Hazır: %s | %s", img_rel, post["headline"])
+    log.info("Hazır: %s%s | %s", img_rel, " + hikâye" if story_image is not None else "", post["headline"])
 
 
 def wants_rates(now: datetime) -> bool:
@@ -181,16 +189,39 @@ def wants_rates(now: datetime) -> bool:
 
 
 def prepare() -> int:
+    """09:00: güncel kur HİKÂYESİ + (salı-cumartesi) dünün KAPANIŞ ÖZETİ gönderisi.
+    Pazar/pazartesi sabahı ve diğer saatlerde gönderi olarak haber paylaşılır."""
     now = datetime.now(TZ)
+    story_image = None
     if wants_rates(now):
         from . import rates
-        built = rates.build_post(now)
+        try:
+            story_image = rates.build_story(now)
+        except Exception as exc:
+            log.warning("Kur hikâyesi üretilemedi: %s", exc)
+        try:
+            built = rates.build_close_post(now)
+        except Exception as exc:
+            log.warning("Kapanış özeti üretilemedi: %s", exc)
+            built = None
         if built:
             post, image = built
-            _save_outputs(post, image, now)
+            _save_outputs(post, image, now, story_image)
             print(post["caption"])
             return 0
-        log.warning("Kur tablosu üretilemedi, bu saatte haber paylaşımına geçiliyor.")
+        log.info("Bu sabah kapanış özeti yok; gönderi olarak haber paylaşılacak.")
+    built = build_news_post()
+    if not built:
+        if story_image is not None:
+            log.error("Haber üretilemedi; yalnızca hikâye paylaşılamaz (gönderi gerekli).")
+        return 1
+    post, image = built
+    _save_outputs(post, image, now, story_image)
+    print(build_markdown(post))
+    return 0
+
+
+def build_news_post():
     history = load_history()
     news = [n for n in sources.fetch_news() if not is_repeat(n, history)]
     if len(news) < 3:
@@ -198,7 +229,7 @@ def prepare() -> int:
         news = [n for n in sources.fetch_news(48) if not is_repeat(n, history)]
     if not news:
         log.error("Yeni haber bulunamadı; bu çalışmada paylaşım yapılmayacak.")
-        return 1
+        return None
     news = news[:config.MAX_ITEMS_TO_MODEL]
     by_id = {n.id: n for n in news}
     market = sources.fetch_market_snapshot()
@@ -247,7 +278,7 @@ def prepare() -> int:
             break
     if not post:
         log.error("Doğrulamadan geçen içerik üretilemedi; yanlış veri yayınlamamak için paylaşım iptal.")
-        return 1
+        return None
 
     ticker = post.get("ticker", "")
     if ticker and not ticker_is_relevant(ticker, story_text):
@@ -259,19 +290,28 @@ def prepare() -> int:
 
     now = datetime.now(TZ)
     image = card.build_card(post, seed=int(now.timestamp()), when=now)
-    _save_outputs(post, image, now)
-    print(build_markdown(post))
-    return 0
+    return post, image
 
 
-def publish(image_url: str) -> int:
+def publish(url: str) -> int:
+    """url: görsellerin herkese açık klasör adresi ('/' ile biter) ya da doğrudan gönderi görseli."""
     from . import instagram
 
     post = json.loads((config.OUTPUT_DIR / "post.json").read_text(encoding="utf-8"))
+    if url.endswith("/"):
+        feed_url = url + Path(post["image_path"]).name
+        story_url = url + Path(post["story_image_path"]).name if post.get("story_image_path") else None
+    else:
+        feed_url, story_url = url, None
     if os.getenv("DRY_RUN", "").lower() in ("1", "true", "yes"):
-        log.info("DRY_RUN açık: Instagram'a gönderilmedi. Görsel: %s", image_url)
+        log.info("DRY_RUN açık: Instagram'a gönderilmedi. Gönderi: %s | Hikâye: %s", feed_url, story_url)
         return 0
-    media_id = instagram.publish_image(image_url, post["caption"])
+    if story_url:
+        try:
+            instagram.publish_story(story_url)
+        except Exception as exc:  # hikâye başarısız olsa da gönderi yayınlanır
+            log.warning("Hikâye yayınlanamadı: %s", exc)
+    media_id = instagram.publish_image(feed_url, post["caption"])
     history = load_history()
     history.append({"ts": datetime.now(timezone.utc).isoformat(), "link": post["source_link"],
                     "title": post["source_title"], "headline": post["headline"],
