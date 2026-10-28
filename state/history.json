@@ -181,5 +181,14 @@
     "image": "posts/20261028-1300.jpg",
     "media_id": "18102421097067931",
     "type": "news"
+  },
+  {
+    "ts": "2026-10-28T15:05:17.295411+00:00",
+    "link": "https://www.coindesk.com/business/2026/10/28/wall-street-backbone-dtcc-brings-usd30-trillion-securities-closer-to-blockchain-with-major-banks",
+    "title": "Wall Street backbone DTCC brings $30 trillion securities closer to blockchain with major banks",
+    "headline": "WALL STREET DEVİNDEN BLOKZİNCİR TABANLI MENKUL KIYMET ADIMI",
+    "image": "posts/20261028-1801.jpg",
+    "media_id": "18492314698128943",
+    "type": "news"
   }
 ]
