@@ -244,5 +244,14 @@
     "image": "posts/20261030-0900.jpg",
     "media_id": "18103152950454639",
     "type": "rates"
+  },
+  {
+    "ts": "2026-10-30T10:04:55.041727+00:00",
+    "link": "https://www.bbc.co.uk/news/articles/cwg7xp8kx4v5o?at_medium=RSS&at_campaign=rss",
+    "title": "Crypto giant Binance hit by $6.3bn hack suspected to be largest in history",
+    "headline": "BINANCE SİSTEMLERİNE YÖNELİK 6,3 MİLYAR DOLARLIK SİBER SALDIRI GERÇEKLEŞTİ",
+    "image": "posts/20261030-1300.jpg",
+    "media_id": "18059023859796133",
+    "type": "news"
   }
 ]
