@@ -280,5 +280,14 @@
     "image": "posts/20261031-0900.jpg",
     "media_id": "18154487860537308",
     "type": "rates"
+  },
+  {
+    "ts": "2026-10-31T10:01:54.215083+00:00",
+    "link": "https://decrypt.co/382287/intel-stock-suffers-worst-crash-in-50-years-as-weak-forecast-overshadows-ai-chip-demand",
+    "title": "Intel Stock Suffers Worst Crash in 50 Years as Weak Forecast Overshadows AI Chip Demand",
+    "headline": "INTEL HİSSELERİNDE ELLİ YILIN EN BÜYÜK ÇÖKÜŞÜ YAŞANDI",
+    "image": "posts/20261031-1300.jpg",
+    "media_id": "17939580006123934",
+    "type": "news"
   }
 ]
