@@ -334,5 +334,14 @@
     "image": "posts/20261101-1800.jpg",
     "media_id": "18100294346541368",
     "type": "news"
+  },
+  {
+    "ts": "2026-11-01T18:06:41.947907+00:00",
+    "link": "https://decrypt.co/382309/bitcoin-etf-investors-exits-record-binance-hack",
+    "title": "Bitcoin ETF Investors Head for the Exits After Record Binance Hack",
+    "headline": "BINANCE SALDIRISI SONRASI BITCOIN ETF FONLARINDA ÇIKIŞLAR HIZLANDI",
+    "image": "posts/20261101-2100.jpg",
+    "media_id": "18137531920577186",
+    "type": "news"
   }
 ]
