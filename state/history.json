@@ -433,5 +433,14 @@
     "image": "posts/20261104-1320.jpg",
     "media_id": "17955029472293257",
     "type": "news"
+  },
+  {
+    "ts": "2026-11-04T15:02:32.399712+00:00",
+    "link": "https://bitcoinmagazine.com/news/bitcoin-trades-above-78000-after-dem-sweep",
+    "title": "Bitcoin Price Soars Above $79,000 After Democratic Sweep of Congress",
+    "headline": "DEMOKRATLARIN KONGRE ZAFERİ BITCOIN FİYATINI TOPARLADI",
+    "image": "posts/20261104-1801.jpg",
+    "media_id": "17989117443076934",
+    "type": "news"
   }
 ]
