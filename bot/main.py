@@ -183,7 +183,7 @@ def _set_output(key: str, value: str) -> None:
             f.write(f"{key}={value}\n")
 
 
-def _save_outputs(post: dict, image, now: datetime, story_image=None) -> None:
+def _save_outputs(post: dict, image, now: datetime, story_image=None, extra_images=None) -> None:
     stamp = now.strftime("%Y%m%d-%H%M")
     config.POSTS_DIR.mkdir(exist_ok=True)
     config.OUTPUT_DIR.mkdir(exist_ok=True)
@@ -196,6 +196,13 @@ def _save_outputs(post: dict, image, now: datetime, story_image=None) -> None:
         story_image.save(config.ROOT / story_rel, "JPEG", quality=config.JPEG_QUALITY, optimize=True)
         post["story_image_path"] = story_rel
         images.append(story_rel)
+    if extra_images:
+        post["carousel_paths"] = [img_rel]
+        for i, extra in enumerate(extra_images, start=2):
+            rel = f"posts/{stamp}-{i}.jpg"
+            extra.save(config.ROOT / rel, "JPEG", quality=config.JPEG_QUALITY, optimize=True)
+            post["carousel_paths"].append(rel)
+            images.append(rel)
     post["created_at"] = now.isoformat()
     (config.OUTPUT_DIR / "post.json").write_text(json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8")
     (config.OUTPUT_DIR / "caption.txt").write_text(post["caption"], encoding="utf-8")
@@ -244,7 +251,12 @@ def prepare() -> int:
             log.error("Haber üretilemedi; yalnızca hikâye paylaşılamaz (gönderi gerekli).")
         return 1
     post, image = built
-    _save_outputs(post, image, now, story_image)
+    extras = []
+    if config.CAROUSEL_ENABLED:
+        from . import slides
+        extras = slides.build_extra_slides(post, seed=int(now.timestamp()))
+        log.info("Kaydırmalı gönderi: %d slayt.", 1 + len(extras))
+    _save_outputs(post, image, now, story_image, extras)
     print(build_markdown(post))
     return 0
 
@@ -339,7 +351,15 @@ def publish(url: str) -> int:
             instagram.publish_story(story_url)
         except Exception as exc:  # hikâye başarısız olsa da gönderi yayınlanır
             log.warning("Hikâye yayınlanamadı: %s", exc)
-    media_id = instagram.publish_image(feed_url, post["caption"])
+    media_id = None
+    if url.endswith("/") and len(post.get("carousel_paths") or []) > 1:
+        try:
+            media_id = instagram.publish_carousel([url + Path(p).name for p in post["carousel_paths"]],
+                                                  post["caption"])
+        except Exception as exc:  # kaydırmalı gönderi başarısız olursa tek görselle yayınla
+            log.warning("Kaydırmalı gönderi yayınlanamadı, tek görselle devam ediliyor: %s", exc)
+    if media_id is None:
+        media_id = instagram.publish_image(feed_url, post["caption"])
     history = load_history()
     history.append({"ts": datetime.now(timezone.utc).isoformat(), "link": post["source_link"],
                     "title": post["source_title"], "headline": post["headline"],

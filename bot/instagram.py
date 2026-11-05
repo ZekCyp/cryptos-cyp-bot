@@ -75,12 +75,24 @@ def keep_token_alive() -> str:
         return token
 
 
-def _publish(params: dict, token: str) -> str:
+def _create_container(params: dict, token: str) -> str:
     user_id = os.environ["IG_USER_ID"]
     auth = {"Authorization": f"Bearer {token}"}
     container = _check(requests.post(f"{BASE}/{user_id}/media", headers=auth, data=params, timeout=60))["id"]
     log.info("Medya kapsayıcısı oluşturuldu: %s", container)
+    _wait_ready(container, auth)
+    return container
 
+
+def _publish(params: dict, token: str) -> str:
+    user_id = os.environ["IG_USER_ID"]
+    auth = {"Authorization": f"Bearer {token}"}
+    container = _create_container(params, token)
+    return _check(requests.post(f"{BASE}/{user_id}/media_publish", headers=auth,
+                                data={"creation_id": container}, timeout=60))["id"]
+
+
+def _wait_ready(container: str, auth: dict) -> None:
     for _ in range(30):  # Instagram görseli kendi sunucusuna çekene kadar bekle
         status = _check(requests.get(f"{BASE}/{container}", headers=auth,
                                      params={"fields": "status_code,status"}, timeout=30))
@@ -92,10 +104,6 @@ def _publish(params: dict, token: str) -> str:
         time.sleep(4)
     else:
         raise InstagramError("Kapsayıcı 2 dakika içinde hazır olmadı.")
-
-    media_id = _check(requests.post(f"{BASE}/{user_id}/media_publish", headers=auth,
-                                    data={"creation_id": container}, timeout=60))["id"]
-    return media_id
 
 
 _TOKEN: str | None = None
@@ -118,4 +126,14 @@ def publish_story(image_url: str) -> str:
     """9:16 görseli 24 saatlik hikâye olarak yayınlar."""
     media_id = _publish({"image_url": image_url, "media_type": "STORIES"}, _token())
     log.info("Hikâye Instagram'da yayınlandı. Medya kimliği: %s", media_id)
+    return media_id
+
+
+def publish_carousel(image_urls: list[str], caption: str) -> str:
+    """2-10 görsellik kaydırmalı gönderi. Tüm görseller aynı en-boy oranında (4:5) olmalı."""
+    token = _token()
+    children = [_create_container({"image_url": u, "is_carousel_item": "true"}, token) for u in image_urls]
+    media_id = _publish({"media_type": "CAROUSEL", "children": ",".join(children), "caption": caption}, token)
+    log.info("Kaydırmalı gönderi Instagram'da yayınlandı (%d slayt). Medya kimliği: %s",
+             len(children), media_id)
     return media_id
