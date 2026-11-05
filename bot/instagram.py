@@ -149,3 +149,10 @@ def publish_reel(video_url: str, caption: str, cover_url: str | None = None) -> 
     media_id = _publish(params, _token(), attempts=40, interval=10)
     log.info("Reels Instagram'da yayınlandı. Medya kimliği: %s", media_id)
     return media_id
+
+
+def publish_video_story(video_url: str) -> str:
+    """9:16 videoyu 24 saatlik hikâye olarak yayınlar (Reels günlerinde)."""
+    media_id = _publish({"video_url": video_url, "media_type": "STORIES"}, _token(), attempts=40, interval=10)
+    log.info("Video hikâye Instagram'da yayınlandı. Medya kimliği: %s", media_id)
+    return media_id

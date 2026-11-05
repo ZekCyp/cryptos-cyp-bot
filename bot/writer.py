@@ -36,6 +36,13 @@ VERİ DOĞRULUĞU (EN KRİTİK KURAL):
 - "Rekor", "tarihi", "tüm zamanların", "en büyük" gibi nitelemeleri YALNIZCA kaynak metin bunu
   açıkça söylüyorsa kullan; manşet, özet ve açıklamada aynı niteleme tutarlı olmalı.
 
+KURUM VE ÜLKE ADLARI:
+- Kurumları her zaman açıkça adlandır; belirsiz "Merkez Bankası", "hükümet", "düzenleyici" yazma.
+  Örnek: "İngiltere Merkez Bankası (BoE)", "Fed", "Avrupa Merkez Bankası (ECB)", "Japonya Merkez Bankası
+  (BoJ)", "TCMB", "ABD Menkul Kıymetler ve Borsa Komisyonu (SEC)". Türk okuyucu ülke belirtilmeyen
+  "Merkez Bankası" ifadesini TCMB sanar; bu yanıltıcıdır.
+- Haberin hangi ülke/kurumla ilgili olduğu MANŞETTE ve ÖZETTE açıkça geçmeli.
+
 JEOPOLİTİK, SİYASİ VE SKANDAL HABERLERİ:
 - Bu haberleri yalnızca PİYASA ETKİSİ üzerinden anlat: petrol, altın, endeksler, VIX, dolar, kripto
   nasıl tepki verdi. Olayın kendisini kısa ve nötr bir cümleyle aktar.

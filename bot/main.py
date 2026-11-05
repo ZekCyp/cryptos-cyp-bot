@@ -373,7 +373,14 @@ def publish(url: str) -> int:
     if os.getenv("DRY_RUN", "").lower() in ("1", "true", "yes"):
         log.info("DRY_RUN açık: Instagram'a gönderilmedi. Gönderi: %s | Hikâye: %s", feed_url, story_url)
         return 0
-    if story_url:
+    story_done = False
+    if url.endswith("/") and post.get("video_path"):
+        try:  # Reels günlerinde hikâyede de hareketli video gösterilir
+            instagram.publish_video_story(url + Path(post["video_path"]).name)
+            story_done = True
+        except Exception as exc:
+            log.warning("Video hikâye yayınlanamadı, görsel hikâyeye geçiliyor: %s", exc)
+    if story_url and not story_done:
         try:
             instagram.publish_story(story_url)
         except Exception as exc:  # hikâye başarısız olsa da gönderi yayınlanır
