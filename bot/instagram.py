@@ -75,25 +75,25 @@ def keep_token_alive() -> str:
         return token
 
 
-def _create_container(params: dict, token: str) -> str:
+def _create_container(params: dict, token: str, attempts: int = 30, interval: int = 4) -> str:
     user_id = os.environ["IG_USER_ID"]
     auth = {"Authorization": f"Bearer {token}"}
     container = _check(requests.post(f"{BASE}/{user_id}/media", headers=auth, data=params, timeout=60))["id"]
     log.info("Medya kapsayıcısı oluşturuldu: %s", container)
-    _wait_ready(container, auth)
+    _wait_ready(container, auth, attempts, interval)
     return container
 
 
-def _publish(params: dict, token: str) -> str:
+def _publish(params: dict, token: str, attempts: int = 30, interval: int = 4) -> str:
     user_id = os.environ["IG_USER_ID"]
     auth = {"Authorization": f"Bearer {token}"}
-    container = _create_container(params, token)
+    container = _create_container(params, token, attempts, interval)
     return _check(requests.post(f"{BASE}/{user_id}/media_publish", headers=auth,
                                 data={"creation_id": container}, timeout=60))["id"]
 
 
-def _wait_ready(container: str, auth: dict) -> None:
-    for _ in range(30):  # Instagram görseli kendi sunucusuna çekene kadar bekle
+def _wait_ready(container: str, auth: dict, attempts: int = 30, interval: int = 4) -> None:
+    for _ in range(attempts):  # Instagram dosyayı kendi sunucusuna çekip işleyene kadar bekle
         status = _check(requests.get(f"{BASE}/{container}", headers=auth,
                                      params={"fields": "status_code,status"}, timeout=30))
         code = status.get("status_code")
@@ -101,9 +101,9 @@ def _wait_ready(container: str, auth: dict) -> None:
             break
         if code in ("ERROR", "EXPIRED"):
             raise InstagramError(f"Kapsayıcı işlenemedi: {status}")
-        time.sleep(4)
+        time.sleep(interval)
     else:
-        raise InstagramError("Kapsayıcı 2 dakika içinde hazır olmadı.")
+        raise InstagramError(f"Kapsayıcı {attempts * interval} saniye içinde hazır olmadı.")
 
 
 _TOKEN: str | None = None
@@ -136,4 +136,16 @@ def publish_carousel(image_urls: list[str], caption: str) -> str:
     media_id = _publish({"media_type": "CAROUSEL", "children": ",".join(children), "caption": caption}, token)
     log.info("Kaydırmalı gönderi Instagram'da yayınlandı (%d slayt). Medya kimliği: %s",
              len(children), media_id)
+    return media_id
+
+
+def publish_reel(video_url: str, caption: str, cover_url: str | None = None) -> str:
+    """9:16 videoyu Reels olarak yayınlar (profil akışında da görünür). Video işleme birkaç dakika sürebilir."""
+    params = {"media_type": "REELS", "video_url": video_url, "caption": caption, "share_to_feed": "true"}
+    if cover_url:
+        params["cover_url"] = cover_url
+    else:
+        params["thumb_offset"] = "4500"
+    media_id = _publish(params, _token(), attempts=40, interval=10)
+    log.info("Reels Instagram'da yayınlandı. Medya kimliği: %s", media_id)
     return media_id

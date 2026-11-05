@@ -313,6 +313,11 @@ def render_card(post: dict, background: Image.Image, when: datetime | None = Non
     return out
 
 
+LAST_BACKGROUND: Image.Image | None = None   # Reels videosu aynı arka planı kullanır
+
+
 def build_card(post: dict, seed: int, when: datetime | None = None) -> Image.Image:
+    global LAST_BACKGROUND
     bg = background_from_cloudflare(post["image_prompt"]) or background_procedural(seed)
+    LAST_BACKGROUND = bg
     return render_card(post, bg, when)

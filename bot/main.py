@@ -195,7 +195,7 @@ def _set_output(key: str, value: str) -> None:
             f.write(f"{key}={value}\n")
 
 
-def _save_outputs(post: dict, image, now: datetime, story_image=None, extra_images=None) -> None:
+def _save_outputs(post: dict, image, now: datetime, story_image=None, extra_images=None, video=None) -> None:
     stamp = now.strftime("%Y%m%d-%H%M")
     config.POSTS_DIR.mkdir(exist_ok=True)
     config.OUTPUT_DIR.mkdir(exist_ok=True)
@@ -215,6 +215,9 @@ def _save_outputs(post: dict, image, now: datetime, story_image=None, extra_imag
             extra.save(config.ROOT / rel, "JPEG", quality=config.JPEG_QUALITY, optimize=True)
             post["carousel_paths"].append(rel)
             images.append(rel)
+    if video is not None:
+        post["video_path"] = str(Path(video).relative_to(config.ROOT)) if Path(video).is_absolute() else str(video)
+        images.append(post["video_path"])
     post["created_at"] = now.isoformat()
     (config.OUTPUT_DIR / "post.json").write_text(json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8")
     (config.OUTPUT_DIR / "caption.txt").write_text(post["caption"], encoding="utf-8")
@@ -268,12 +271,18 @@ def prepare() -> int:
     if config.CAROUSEL_ENABLED:
         extras = slides.build_extra_slides(post, seed=int(now.timestamp()))
         log.info("Kaydırmalı gönderi: %d slayt.", 1 + len(extras))
+    video = None
+    from . import reels
+    if reels.is_reel_slot(now) and card.LAST_BACKGROUND is not None:
+        config.POSTS_DIR.mkdir(exist_ok=True)
+        video = reels.render_video(post, card.LAST_BACKGROUND, slides.LAST_CHART,
+                                   config.POSTS_DIR / f"{now:%Y%m%d-%H%M}-reel.mp4")
     if story_image is None and config.NEWS_STORY_ENABLED:
         try:
             story_image = slides.build_post_story(image, has_more=bool(extras))
         except Exception as exc:
             log.warning("Haber hikâyesi üretilemedi: %s", exc)
-    _save_outputs(post, image, now, story_image, extras)
+    _save_outputs(post, image, now, story_image, extras, video)
     print(build_markdown(post))
     return 0
 
@@ -370,7 +379,13 @@ def publish(url: str) -> int:
         except Exception as exc:  # hikâye başarısız olsa da gönderi yayınlanır
             log.warning("Hikâye yayınlanamadı: %s", exc)
     media_id = None
-    if url.endswith("/") and len(post.get("carousel_paths") or []) > 1:
+    if url.endswith("/") and post.get("video_path"):
+        try:
+            cover = url + Path(post["story_image_path"]).name if post.get("story_image_path") else None
+            media_id = instagram.publish_reel(url + Path(post["video_path"]).name, post["caption"], cover)
+        except Exception as exc:  # Reels başarısız olursa kaydırmalı gönderiyle devam
+            log.warning("Reels yayınlanamadı, kaydırmalı gönderiyle devam ediliyor: %s", exc)
+    if media_id is None and url.endswith("/") and len(post.get("carousel_paths") or []) > 1:
         try:
             media_id = instagram.publish_carousel([url + Path(p).name for p in post["carousel_paths"]],
                                                   post["caption"])
@@ -381,7 +396,8 @@ def publish(url: str) -> int:
     history = load_history()
     history.append({"ts": datetime.now(timezone.utc).isoformat(), "link": post["source_link"],
                     "title": post["source_title"], "headline": post["headline"],
-                    "image": post["image_path"], "media_id": media_id, "type": post.get("type", "news")})
+                    "image": post["image_path"], "media_id": media_id, "type": post.get("type", "news"),
+                    "format": "reels" if post.get("video_path") else "post"})
     save_history(history)
     return 0
 

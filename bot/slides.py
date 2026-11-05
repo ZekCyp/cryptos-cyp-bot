@@ -196,12 +196,18 @@ def render_chart(series: list[tuple[datetime, float]], name: str, unit: str, see
 
 
 # ------------------------------------------------------------------ Üst düzey
+LAST_CHART: tuple | None = None   # (seri, ad, birim) — Reels videosu da kullanır
+
+
 def build_extra_slides(post: dict, seed: int) -> list[Image.Image]:
+    global LAST_CHART
     chart_img = None
+    LAST_CHART = None
     try:
         sym, name, unit = chart_symbol(post)
         series = fetch_series(sym)
         if len(series) >= 10 and all(v > 0 for _, v in series):
+            LAST_CHART = (series, name, unit)
             chart_img = render_chart(series, name, unit, seed + 2, 3)
         else:
             log.warning("Grafik için yeterli veri yok (%s, %d nokta).", sym, len(series))

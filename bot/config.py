@@ -59,6 +59,8 @@ IG_API_HOST = "https://graph.instagram.com"
 IG_API_VERSION = os.getenv("IG_API_VERSION", "v26.0")
 
 # Görsel
+# Reels: "gün-saat" çiftleri (gün: 0=pazartesi ... 6=pazar). Varsayılan: pzt, çrş, cuma 18:00
+REELS_SLOTS = os.getenv("REELS_SLOTS", "0-18,2-18,4-18")
 NEWS_STORY_ENABLED = os.getenv("NEWS_STORY_ENABLED", "true").lower() not in ("0", "false", "no")
 CAROUSEL_ENABLED = os.getenv("CAROUSEL_ENABLED", "true").lower() not in ("0", "false", "no")
 CARD_W, CARD_H = 1080, 1350      # Instagram 4:5 dikey
