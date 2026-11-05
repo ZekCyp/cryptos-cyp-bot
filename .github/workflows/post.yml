@@ -7,6 +7,11 @@ on:
         description: "Deneme modu (Instagram'a gönderme, sadece içeriği üret)"
         type: boolean
         default: true
+      format:
+        description: "Paylaşım biçimi (otomatik = takvime göre)"
+        type: choice
+        options: [otomatik, reels, kaydirmali]
+        default: otomatik
 
 permissions:
   contents: write
@@ -21,6 +26,7 @@ jobs:
     timeout-minutes: 20
     env:
       DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run || 'false' }}
+      POST_FORMAT: ${{ inputs.format }}
     steps:
       - uses: actions/checkout@v4
 
