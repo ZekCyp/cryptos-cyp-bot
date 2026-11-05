@@ -67,10 +67,10 @@ jobs:
             for i in $(seq 1 12); do
               CT="$(curl -sIL -o /dev/null -w '%{http_code} %{content_type}' "$BASE$N" || true)"
               echo "jsDelivr $N: $CT"
-              [[ "$CT" == 200\ image/jpeg* ]] && break
+              [[ "$CT" == 200\ image/jpeg* || "$CT" == 200\ video/mp4* ]] && break
               sleep 5
             done
-            [[ "$CT" == 200\ image/jpeg* ]] || OK=0
+            [[ "$CT" == 200\ image/jpeg* || "$CT" == 200\ video/mp4* ]] || OK=0
           done
           [ "$OK" = 1 ] || BASE="https://raw.githubusercontent.com/${{ github.repository }}/${SHA}/"
           echo "url=$BASE" >> "$GITHUB_OUTPUT"
