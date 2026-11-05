@@ -91,13 +91,25 @@ TICKER_NAMES = {
 }
 
 
-def ticker_is_relevant(ticker: str, text: str) -> bool:
+_GENERIC_NAME_WORDS = {"the", "inc", "corp", "corporation", "company", "holdings", "group", "technology",
+                       "technologies", "international", "global", "limited", "ltd", "plc", "co", "and", "trust",
+                       "fund", "etf", "shares", "class", "systems", "semiconductor", "platforms"}
+
+
+def company_keywords(name: str) -> list[str]:
+    """'Marvell Technology, Inc.' -> ['marvell']: şirket adının ayırt edici ilk kelimesi."""
+    words = [w for w in re.findall(r"[a-z0-9]+", (name or "").lower())
+             if len(w) >= 3 and w not in _GENERIC_NAME_WORDS]
+    return words[:1]
+
+
+def ticker_is_relevant(ticker: str, text: str, company_name: str = "") -> bool:
     """Etiket yalnızca şirket/varlık haberin başlığında veya metninde geçiyorsa gösterilir."""
     t = (ticker or "").strip().upper()
     if not t:
         return False
     low = text.lower()
-    names = TICKER_NAMES.get(t, []) + [t.removesuffix("-USD").lower()]
+    names = TICKER_NAMES.get(t, []) + [t.removesuffix("-USD").lower()] + company_keywords(company_name)
     return any(re.search(rf"(?<![\w]){re.escape(n)}(?![\w])", low) for n in names)
 
 
@@ -252,10 +264,15 @@ def prepare() -> int:
         return 1
     post, image = built
     extras = []
+    from . import slides
     if config.CAROUSEL_ENABLED:
-        from . import slides
         extras = slides.build_extra_slides(post, seed=int(now.timestamp()))
         log.info("Kaydırmalı gönderi: %d slayt.", 1 + len(extras))
+    if story_image is None and config.NEWS_STORY_ENABLED:
+        try:
+            story_image = slides.build_post_story(image, has_more=bool(extras))
+        except Exception as exc:
+            log.warning("Haber hikâyesi üretilemedi: %s", exc)
     _save_outputs(post, image, now, story_image, extras)
     print(build_markdown(post))
     return 0
@@ -321,10 +338,11 @@ def build_news_post():
         return None
 
     ticker = post.get("ticker", "")
-    if ticker and not ticker_is_relevant(ticker, story_text):
-        log.info("Borsa kodu %s haber metninde geçmiyor, etiket gösterilmeyecek.", ticker)
-        ticker = ""
-    post["quote"] = sources.fetch_quote(ticker) if ticker else None
+    quote = sources.fetch_quote(ticker) if ticker else None
+    if quote and not ticker_is_relevant(ticker, story_text, quote.get("name", "")):
+        log.info("Borsa kodu %s (%s) haber metninde geçmiyor, etiket gösterilmeyecek.", ticker, quote.get("name"))
+        quote = None
+    post["quote"] = quote
     if post["quote"]:
         log.info("Borsa kodu etiketi: %s %+.2f%%", post["quote"]["symbol"], post["quote"]["change"])
 

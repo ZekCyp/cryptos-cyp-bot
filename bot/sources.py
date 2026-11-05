@@ -229,8 +229,10 @@ def fetch_quote(symbol: str) -> dict | None:
         closes = [c for c in res["indicators"]["quote"][0]["close"] if c is not None]
         if len(closes) < 2:
             return None
+        meta = res.get("meta", {})
         return {"symbol": symbol.removesuffix("-USD"), "last": closes[-1],
-                "change": (closes[-1] / closes[-2] - 1) * 100}
+                "change": (closes[-1] / closes[-2] - 1) * 100,
+                "name": meta.get("longName") or meta.get("shortName") or ""}
     except Exception as exc:
         log.warning("Sembol verisi alınamadı (%s): %s", symbol, exc)
         return None

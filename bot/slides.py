@@ -213,3 +213,46 @@ def build_extra_slides(post: dict, seed: int) -> list[Image.Image]:
         log.warning("Etki slaytı üretilemedi: %s", exc)
         return []
     return [impacts] + ([chart_img] if chart_img else [])
+
+
+# ------------------------------------------------------- Haber hikâyesi (9:16)
+def build_post_story(card_img: Image.Image, has_more: bool = True) -> Image.Image:
+    """Gönderi kartının dikey hikâye sürümü (1080x1920). Instagram arayüzü üst ve alt ~250 pikseli
+    kapattığı için kart ortalanır, yönlendirme yazısı alttaki güvenli alanın hemen üstüne konur."""
+    SW, SH = 1080, 1920
+    bg = card.background_procedural(7).resize((SW, SH), Image.LANCZOS).convert("RGBA")
+    ov = Image.new("RGBA", (SW, SH), card.NAVY + (215,))
+    canvas = Image.alpha_composite(bg, ov)
+    ui = Image.new("RGBA", (SW, SH), (0, 0, 0, 0))   # yarı saydam öğeler ayrı katmanda çizilir
+    d = ImageDraw.Draw(ui)
+
+    badge = "YENİ ANALİZ"
+    f_badge = card.font("SemiBold", 26)
+    bw = card.spaced_width(d, badge, f_badge, 3) + 56
+    bx = (SW - bw) // 2
+    d.rounded_rectangle((bx, 262, bx + bw, 262 + 58), radius=29, fill=card.CYAN + (36,),
+                        outline=card.CYAN + (230,), width=2)
+    card.draw_spaced(d, (bx + 28, 262 + 14), badge, f_badge, card.CYAN + (255,), 3)
+
+    cw = 940
+    ch = int(card_img.height * cw / card_img.width)          # 1175
+    top = 262 + 58 + 34
+    shadow = Image.new("RGBA", (SW, SH), (0, 0, 0, 0))
+    ImageDraw.Draw(shadow).rounded_rectangle(((SW - cw) // 2 - 6, top - 6, (SW + cw) // 2 + 6, top + ch + 6),
+                                             radius=28, outline=card.CYAN + (90,), width=3)
+    canvas = Image.alpha_composite(canvas, shadow)
+    canvas = Image.alpha_composite(canvas, ui)
+    mask = Image.new("L", (cw, ch), 0)
+    ImageDraw.Draw(mask).rounded_rectangle((0, 0, cw, ch), radius=24, fill=255)
+    canvas.paste(card_img.resize((cw, ch), Image.LANCZOS), ((SW - cw) // 2, top), mask)
+
+    ui = Image.new("RGBA", (SW, SH), (0, 0, 0, 0))
+    d = ImageDraw.Draw(ui)
+    cta = "Analiz ve 30 günlük grafik profilde  ↗" if has_more else "Detaylı analiz profilde  ↗"
+    f_cta = card.font("Bold", 34)
+    tw = d.textlength(cta, font=f_cta)
+    y = top + ch + 40
+    d.rounded_rectangle(((SW - tw) // 2 - 36, y, (SW + tw) // 2 + 36, y + 76), radius=38,
+                        fill=card.PANEL + (240,), outline=card.CYAN + (200,), width=2)
+    d.text(((SW - tw) // 2, y + 18), cta, font=f_cta, fill=card.WHITE + (255,))
+    return Image.alpha_composite(canvas, ui).convert("RGB")

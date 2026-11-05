@@ -54,7 +54,10 @@ kararları, merkez bankası/makro veriler, çip sektörü bilançoları ve yapay
 skandalları (savaş, yaptırım, seçim, ticaret savaşı, büyük soruşturmalar). Jeopolitik veya skandal
 haberini YALNIZCA piyasa verisinde ya da haber metninde ölçülebilir bir piyasa tepkisi varsa seç
 (ör. petrol, altın, endeks, VIX veya kripto belirgin hareket etti); piyasa bağlantısı olmayan genel
-dünya haberlerini seçme. Somut ve doğrulanabilir rakam içeren haberleri tercih et. Spekülatif,
+dünya haberlerini seçme. TAZELİK: Haberin anlattığı olayın kendisi son 24-48 saatte yaşanmış olmalı.
+Haber listede yeni görünse bile metinden olayın birkaç gün önce duyurulduğu anlaşılıyorsa (ör. "earlier this
+week", "announced Monday", günler önceki tarih) ve listede daha yeni bir önemli gelişme varsa onu seç.
+Somut ve doğrulanabilir rakam içeren haberleri tercih et. Spekülatif,
 tek bir küçük altcoin'e dair, sponsorlu veya "fiyat tahmini" türü haberleri seçme.
 
 Bu sayfada son paylaşılan başlıklar (aynı konuyu TEKRAR SEÇME, farklı bir gelişme seç):
