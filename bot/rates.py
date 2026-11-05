@@ -184,7 +184,7 @@ def build_close_caption(rows: list[dict], day: date) -> str:
         "",
         config.DISCLAIMER,
         "",
-        config.HASHTAGS + " #Dolar #Altın #BIST100 #Petrol",
+        config.BRAND_TAG + " #Dolar #Altın #Borsa #Piyasalar",
     ]
     return "\n".join(lines)
 

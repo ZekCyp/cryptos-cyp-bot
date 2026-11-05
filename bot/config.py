@@ -10,7 +10,20 @@ FONTS_DIR = ROOT / "fonts"
 HISTORY_FILE = STATE_DIR / "history.json"
 
 SIGNATURE = "KRİPTO İSTİHBARATI | @CRYPTOS.CYP"
-HASHTAGS = "#CryptosCYP #Bitcoin #KriptoPara #Web3 #Borsa #Finans #BTC #Yatırım"
+# Instagram gönderi başına en fazla 5 etiket kabul ediyor: 1 marka etiketi + en fazla 4 konu etiketi.
+BRAND_TAG = "#CryptosCYP"
+MAX_HASHTAGS = 5
+# Model uygun etiket öneremezse kategoriye göre kullanılacak konu etiketleri
+DEFAULT_TOPIC_TAGS = {
+    "CRYPTO": ["#Bitcoin", "#Kripto", "#KriptoPara", "#BTC"],
+    "ETF": ["#Bitcoin", "#ETF", "#Kripto", "#Borsa"],
+    "SEMICONDUCTOR": ["#YapayZeka", "#Çip", "#Teknoloji", "#Borsa"],
+    "MACRO": ["#Ekonomi", "#Faiz", "#Fed", "#Piyasalar"],
+    "REGULATION": ["#Kripto", "#Regülasyon", "#SEC", "#Piyasalar"],
+    "GEOPOLITICS": ["#Ekonomi", "#Petrol", "#Altın", "#Piyasalar"],
+    "": ["#Ekonomi", "#Borsa", "#Kripto", "#Piyasalar"],
+}
+HASHTAGS = BRAND_TAG + " #Bitcoin #Kripto #Borsa #Ekonomi"   # geriye dönük uyumluluk (5 etiket)
 DISCLAIMER = "Bu içerik bilgilendirme amaçlıdır, yatırım tavsiyesi değildir."
 
 # Haber kaynakları (RSS). Biri çalışmazsa diğerleriyle devam edilir.

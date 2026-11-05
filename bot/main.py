@@ -102,6 +102,34 @@ def ticker_is_relevant(ticker: str, text: str) -> bool:
 
 
 # --------------------------------------------------------------- Metin çıktısı
+_TAG_RE = re.compile(r"^#[0-9A-Za-zÇĞİÖŞÜçğıöşü]{2,24}$")
+_BANNED_TAGS = {"#keşfet", "#kesfet", "#explore", "#takip", "#follow", "#fyp", "#reels", "#instagood"}
+
+
+def _category_key(category: str) -> str:
+    c = (category or "").upper()
+    for key, words in (("ETF", ["ETF", "FLOWS"]), ("SEMICONDUCTOR", ["SEMICONDUCTOR", "AI"]),
+                       ("REGULATION", ["REGULATION", "POLICY", "LEGAL"]), ("GEOPOLITICS", ["GEOPOLITIC"]),
+                       ("MACRO", ["MACRO", "CENTRAL", "GLOBAL MARKETS"]), ("CRYPTO", ["CRYPTO", "WEB3"])):
+        if any(w in c for w in words):
+            return key
+    return ""
+
+
+def build_hashtags(post: dict) -> str:
+    """Marka etiketi + en fazla 4 geçerli konu etiketi (Instagram sınırı: 5)."""
+    tags, seen = [config.BRAND_TAG], {config.BRAND_TAG.lower()}
+    proposed = [t if str(t).startswith("#") else f"#{t}" for t in (post.get("hashtags") or [])]
+    for t in proposed + config.DEFAULT_TOPIC_TAGS[_category_key(post.get("category", ""))]:
+        t = str(t).strip()
+        if _TAG_RE.match(t) and t.lower() not in seen and t.lower() not in _BANNED_TAGS:
+            tags.append(t)
+            seen.add(t.lower())
+        if len(tags) >= config.MAX_HASHTAGS:
+            break
+    return " ".join(tags)
+
+
 def build_caption(post: dict) -> str:
     imp = post["impacts"]
     return "\n".join([
@@ -114,7 +142,7 @@ def build_caption(post: dict) -> str:
         post["cta"].strip(), "",
         f"Kaynak: {post['source_name']}",
         config.DISCLAIMER, "",
-        config.HASHTAGS,
+        build_hashtags(post),
     ])
 
 

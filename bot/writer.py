@@ -99,7 +99,12 @@ ALANLAR:
   sembolü (ör. NVDA, TSM, ASML, AMD, INTC, MU, AVGO, COIN, MSTR, IBIT, SOXL, BTC-USD, ETH-USD, SOL-USD).
   Genel piyasa, makro veya birden çok şirketi kapsayan haberse boş bırak (""). Haberde adı geçmeyen
   bir şirketi (ör. sektör haberi için Nvidia) ASLA yazma.
-- hook: Okuyucuyu durduran, piyasa psikolojisini özetleyen 1-2 cümle.
+- hook: Okuyucuyu durduran, piyasa psikolojisini özetleyen 1-2 cümle. Instagram aramasında bulunabilmek
+  için İLK CÜMLEDE haberin ana konusunu insanların aradığı Türkçe kelimelerle açıkça adlandır
+  (ör. "Bitcoin ETF", "dolar kuru", "Nvidia hissesi", "Fed faiz kararı", "petrol fiyatları").
+- hashtags: Haberin konusuna özgü EN FAZLA 4 Türkçe etiket, # ile (ör. "#Bitcoin", "#YapayZeka", "#Fed",
+  "#Petrol"). Türkiye'de gerçekten aranan, kısa, boşluksuz etiketler seç; "#keşfet", "#takip" gibi
+  genel etiketler, uydurma veya çok uzun etiketler kullanma. Sayfa etiketi otomatik eklenir, yazma.
 - context: Haberin arka planı ve net finansal veriler (2-4 cümle).
 - impacts.institutional: Kurumsal Oyuncular ve Likidite etkisi (1-2 cümle).
 - impacts.price: Fiyat / Trend Dinamikleri (1-2 cümle).
@@ -148,6 +153,7 @@ WRITE_SCHEMA = {
                     "required": ["institutional", "price", "retail"]},
         "cta": {"type": "STRING"},
         "ticker": {"type": "STRING"},
+        "hashtags": {"type": "ARRAY", "items": {"type": "STRING"}},
     },
     "required": ["category", "headline", "metric1", "metric2", "summary", "image_prompt", "hook",
                  "context", "impacts", "cta", "ticker"],
