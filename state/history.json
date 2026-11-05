@@ -488,5 +488,15 @@
     "media_id": "17959004370268451",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-05T15:05:32.899943+00:00",
+    "link": "https://bitcoinmagazine.com/news/riot-names-anthropic-texas-lease",
+    "title": "Riot (RIOT) Names Anthropic as Tenant in $28 Billion Texas Lease, Could Owe It 12% Interest",
+    "headline": "RİOT PLATFORMS VE ANTHROPIC ARASINDA 28 MİLYAR DOLARLIK ANLAŞMA",
+    "image": "posts/20261105-1801.jpg",
+    "media_id": "18083710367344438",
+    "type": "news",
+    "format": "post"
   }
 ]
