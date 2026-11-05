@@ -498,5 +498,15 @@
     "media_id": "18083710367344438",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-05T18:07:03.609744+00:00",
+    "link": "https://bitcoinmagazine.com/news/moscow-exchange-bitcoin-trading-dec-1",
+    "title": "U.S.-Sanctioned Moscow Exchange Will List Bitcoin on Dec. 1 as Russia Pulls Crypto Trading Home",
+    "headline": "MOSKOVA BORSASI YAPTIRIMLARIN GÖLGESİNDE BITCOIN İŞLEMLERİNİ BAŞLATIYOR",
+    "image": "posts/20261105-2101.jpg",
+    "media_id": "18108856171969806",
+    "type": "news",
+    "format": "post"
   }
 ]
