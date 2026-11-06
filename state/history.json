@@ -538,5 +538,15 @@
     "media_id": "18254099152309051",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-06T18:05:33.734361+00:00",
+    "link": "https://bitcoinmagazine.com/news/dol-rule-crypto-401k-white-house-review",
+    "title": "Rule to Allow Crypto in 401(k)s Arrives at White House for Final Review",
+    "headline": "ABD EMEKLİLİK PLANLARINDA KRİPTO DÜZENLEMESİ BEYAZ SARAY'DA",
+    "image": "posts/20261106-2101.jpg",
+    "media_id": "18134835115787664",
+    "type": "news",
+    "format": "post"
   }
 ]
