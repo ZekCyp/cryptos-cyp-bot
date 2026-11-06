@@ -518,5 +518,15 @@
     "media_id": "17916063807281295",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-06T10:05:33.134923+00:00",
+    "link": "https://cointelegraph.com/markets/bitcoin-ether-etfs-lose-post-election-gains-erased?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Bitcoin, Ether ETFs post $530M outflows as election gains evaporate",
+    "headline": "ABD SPOT KRİPTO ETF'LERİNDEN 530 MİLYON DOLARLIK ÇIKIŞ",
+    "image": "posts/20261106-1301.jpg",
+    "media_id": "18106662590003319",
+    "type": "news",
+    "format": "post"
   }
 ]
