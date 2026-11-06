@@ -528,5 +528,15 @@
     "media_id": "18106662590003319",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-06T15:04:03.067605+00:00",
+    "link": "https://www.cnbc.com/2026/11/06/jobs-report-october-2026.html",
+    "title": "U.S. economy added 165,000 jobs in October, way more than expected; unemployment rate slips to 4.1%",
+    "headline": "ABD İSTİHDAMI EKİM AYINDA BEKLENTİLERİ AŞTI",
+    "image": "posts/20261106-1801.jpg",
+    "media_id": "18254099152309051",
+    "type": "news",
+    "format": "reels"
   }
 ]
