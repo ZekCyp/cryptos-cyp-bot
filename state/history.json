@@ -578,5 +578,15 @@
     "media_id": "17990238213095732",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-07T18:06:29.700993+00:00",
+    "link": "https://www.theblock.co/news/markets/2026-11-07-bitcoin-etfs-flip-negative-for-2026-after-1-28-billion-outflow-week-worst-since-june-435984",
+    "title": "Bitcoin ETFs flip negative for 2026 after $1.28 billion outflow week, worst since June",
+    "headline": "ABD SPOT BITCOIN ETF'LERİNDE SERT ÇIKIŞ DALGASI",
+    "image": "posts/20261107-2101.jpg",
+    "media_id": "18341700328279521",
+    "type": "news",
+    "format": "post"
   }
 ]
