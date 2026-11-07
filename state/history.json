@@ -548,5 +548,15 @@
     "media_id": "18134835115787664",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-07T06:01:21.591449+00:00",
+    "link": "",
+    "title": "Kapanış özeti 2026-11-06",
+    "headline": "DÜNÜ NASIL KAPATTIK · 6 KASIM CUMA",
+    "image": "posts/20261107-0900.jpg",
+    "media_id": "18033330659884764",
+    "type": "rates",
+    "format": "post"
   }
 ]
