@@ -608,5 +608,15 @@
     "media_id": "18101267918556404",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-08T15:05:49.472847+00:00",
+    "link": "https://www.tomshardware.com/tech-industry/artificial-intelligence/two-chinese-companies-cleared-to-buy-banned-nvidia-ai-chips-have-empty-offices-and-unknown-addresses-investigation-reveals-businesses-have-ties-to-sanctioned-chinese-military-suppliers",
+    "title": "Two Chinese companies cleared to buy banned Nvidia AI chips have empty offices and unknown addresses",
+    "headline": "ÇİNLİ ŞİRKETLERİN YAPAY ZEKA ÇİPİ LİSANSLARINDA ŞÜPHELİ YAPI",
+    "image": "posts/20261108-1801.jpg",
+    "media_id": "18151888144514735",
+    "type": "news",
+    "format": "post"
   }
 ]
