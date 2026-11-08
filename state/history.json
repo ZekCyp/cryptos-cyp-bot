@@ -618,5 +618,15 @@
     "media_id": "18151888144514735",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-08T18:08:32.391909+00:00",
+    "link": "https://www.tomshardware.com/pc-components/ram/pcs-with-64gb-of-ram-plummet-18-percent-as-memory-prices-soar-cpu-z-install-base-data-shows-ddr4-making-a-surprise-comeback",
+    "title": "PC's with 64GB of RAM plummet 18% as memory prices soar",
+    "headline": "YÜKSEK KAPASİTELİ RAM FİYATLARINDAKİ ARTIŞ BİLGİSAYAR TERCİHLERİNİ DEĞİŞTİRDİ",
+    "image": "posts/20261108-2101.jpg",
+    "media_id": "17987814186095421",
+    "type": "news",
+    "format": "post"
   }
 ]
