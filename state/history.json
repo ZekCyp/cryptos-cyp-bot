@@ -588,5 +588,15 @@
     "media_id": "18341700328279521",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-08T06:04:05.376822+00:00",
+    "link": "https://www.theblock.co/news/business/2026-11-07-binance-cfo-steps-down-nine-days-after-record-hack-co-ceo-says-transition-was-planned-six-months-ago-435992",
+    "title": "Binance CFO steps down nine days after record hack; co-CEO says transition was planned six months ago",
+    "headline": "BINANCE CFO'SU 6 MİLYAR DOLARLIK SİBER SALDIRININ ARDINDAN GÖREVDEN AYRILIYOR",
+    "image": "posts/20261108-0900.jpg",
+    "media_id": "18260051296308261",
+    "type": "news",
+    "format": "post"
   }
 ]
