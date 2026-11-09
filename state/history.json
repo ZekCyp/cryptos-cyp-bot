@@ -658,5 +658,15 @@
     "media_id": "17915605185506669",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-09T18:04:15.803521+00:00",
+    "link": "https://www.cnbc.com/2026/11/09/nvidia-jensen-huang-chinese-spy-investigation.html",
+    "title": "Nvidia stock falls 4% as scrutiny turns to Jensen Huang’s affair with alleged Chinese spy",
+    "headline": "NVIDIA HİSSELERİ İNCELEME ALTINDA: JENSEN HUANG SORUŞTURMASI",
+    "image": "posts/20261109-2101.jpg",
+    "media_id": "18472698148184885",
+    "type": "news",
+    "format": "post"
   }
 ]
