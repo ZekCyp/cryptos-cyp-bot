@@ -638,5 +638,15 @@
     "media_id": "18133786195783234",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-09T10:07:18.286076+00:00",
+    "link": "https://cointelegraph.com/markets/bitcoin-etfs-13b-biggest-weekly-outflow-late-june?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Bitcoin ETFs shed $1.3B in biggest weekly outflow since late June",
+    "headline": "BITCOIN ETF FONLARINDAN HAFTALIK ÇIKIŞLAR REKOR SEVİYEYE ULAŞTI",
+    "image": "posts/20261109-1301.jpg",
+    "media_id": "17900198967678751",
+    "type": "news",
+    "format": "post"
   }
 ]
