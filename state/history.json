@@ -628,5 +628,15 @@
     "media_id": "17987814186095421",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-09T06:05:46.107120+00:00",
+    "link": "https://www.theblock.co/news/defi/2026-11-08-nvidia-perps-slide-jensen-huang-436047",
+    "title": "Nvidia perps slide as market reacts to CEO Jensen Huang’s Chinese spy scandal",
+    "headline": "NVIDIA HİSSELERİNDE JENSEN HUANG SORUŞTURMASI ETKİSİ",
+    "image": "posts/20261109-0901.jpg",
+    "media_id": "18133786195783234",
+    "type": "news",
+    "format": "post"
   }
 ]
