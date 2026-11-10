@@ -698,5 +698,15 @@
     "media_id": "18107016242002330",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-10T18:09:05.356849+00:00",
+    "link": "https://www.cnbc.com/2026/11/10/us-bonds-treasurys-yields.html",
+    "title": "10-year Treasury yield races back to 5% as inflation data, Waller comments drive rate hike expectations",
+    "headline": "ABD 10 YILLIK TAHVİL FAİZİ YÜZDE 5 SEVİYESİNDE",
+    "image": "posts/20261110-2101.jpg",
+    "media_id": "18106623608331170",
+    "type": "news",
+    "format": "post"
   }
 ]
