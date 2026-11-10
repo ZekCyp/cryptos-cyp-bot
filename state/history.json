@@ -678,5 +678,15 @@
     "media_id": "18147358174581364",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-10T10:03:00.634099+00:00",
+    "link": "https://cointelegraph.com/markets/blackrock-ibit-bitcoin-etf-outflows?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "BlackRock Bitcoin ETF outflows hit $1.66B over seven trading sessions",
+    "headline": "BLACKROCK BITCOIN ETF FONUNDA YEDİ GÜNLÜK ÇIKIŞ",
+    "image": "posts/20261110-1301.jpg",
+    "media_id": "18002843670010646",
+    "type": "news",
+    "format": "post"
   }
 ]
