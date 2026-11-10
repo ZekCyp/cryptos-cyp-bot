@@ -688,5 +688,15 @@
     "media_id": "18002843670010646",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-10T15:03:54.688909+00:00",
+    "link": "https://www.cnbc.com/2026/11/10/cpi-inflation-report-october-2026.html",
+    "title": "Consumer prices rose 0.4% in October, more than expected, complicating Fed's inflation fight",
+    "headline": "ABD ENFLASYONU BEKLENTİLERİ AŞTI: FED FAİZ BASKISI ARTIYOR",
+    "image": "posts/20261110-1801.jpg",
+    "media_id": "18107016242002330",
+    "type": "news",
+    "format": "post"
   }
 ]
