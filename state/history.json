@@ -718,5 +718,15 @@
     "media_id": "17911573974570882",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-11T10:02:53.582755+00:00",
+    "link": "https://www.cnbc.com/2026/11/11/coreweave-crwv-outlook-earnings-ai.html",
+    "title": "CoreWeave stock pops 13% after outlook raise eases AI slowdown concerns",
+    "headline": "COREWEAVE GELİR BEKLENTİSİNİ YÜKSELTTİ, HİSSELERİ PİYASA ÖNCESİNDE %13 DEĞER KAZANDI",
+    "image": "posts/20261111-1301.jpg",
+    "media_id": "18015302888764810",
+    "type": "news",
+    "format": "post"
   }
 ]
