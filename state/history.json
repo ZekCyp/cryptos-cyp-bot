@@ -738,5 +738,15 @@
     "media_id": "18155289127557070",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-11T18:02:55.640231+00:00",
+    "link": "https://www.cnbc.com/2026/11/11/goolsbee-october-inflation-fed-rates-disturbing-distressing.html",
+    "title": "Fed's Goolsbee calls inflation report 'borderline disturbing' as central bank weighs more hikes",
+    "headline": "CHİCAGO FED BASKANİ GOOLSBEE'DEN ENFLASYON VERİSİNE SERT UYARİSİ",
+    "image": "posts/20261111-2101.jpg",
+    "media_id": "18648002275023680",
+    "type": "news",
+    "format": "post"
   }
 ]
