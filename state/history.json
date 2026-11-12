@@ -778,5 +778,15 @@
     "media_id": "18119490529825606",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-12T18:09:10.442915+00:00",
+    "link": "https://bitcoinmagazine.com/markets/jpmorgan-lifts-strategy-mstr-stake-36",
+    "title": "JPMorgan Lifts Its Strategy (MSTR) Stake 36% and Holds $540 Million in Bitcoin ETFs",
+    "headline": "JPMORGAN BITCOIN ETF VE STRATEGY HİSSELERİNDEKİ POZİSYONUNU ARTIRDI",
+    "image": "posts/20261112-2101.jpg",
+    "media_id": "18098636534673987",
+    "type": "news",
+    "format": "post"
   }
 ]
