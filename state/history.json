@@ -758,5 +758,15 @@
     "media_id": "17933684286422948",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-12T10:04:19.928520+00:00",
+    "link": "https://www.cnbc.com/2026/11/12/nvidia-nvda-jensen-huang-second-affair.html",
+    "title": "Nvidia stock falls 6% as investors await Jensen Huang’s fate",
+    "headline": "NVIDIA HİSSELERİ YÖNETİM KURULU GELİŞMELERİYLE GERİLEDİ",
+    "image": "posts/20261112-1301.jpg",
+    "media_id": "18090146618303047",
+    "type": "news",
+    "format": "post"
   }
 ]
