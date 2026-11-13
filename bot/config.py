@@ -71,7 +71,7 @@ ELEVENLABS_MODEL = os.getenv("ELEVENLABS_MODEL") or "eleven_flash_v2_5"   # en e
 # Seslendirilecek Reels saatleri ("gün-saat"; "*" = her gün). Diğer Reels sessiz + altyazılı çıkar.
 # Varsayılan: her gün yalnızca 18:00 (ayda ~30 Reels × ~400 karakter ≈ 12.000 kredi)
 VOICED_SLOTS = os.getenv("VOICED_SLOTS") or "*-18"
-REEL_OUTRO = "Günün kritik piyasa verileri için Cryptos sayfasını takip edin."
+REEL_OUTRO = "Doğru borsa haberleri için bizi takip edin."   # bir kez seslendirilir, sonra önbellekten
 NEWS_STORY_ENABLED = os.getenv("NEWS_STORY_ENABLED", "true").lower() not in ("0", "false", "no")
 CAROUSEL_ENABLED = os.getenv("CAROUSEL_ENABLED", "true").lower() not in ("0", "false", "no")
 CARD_W, CARD_H = 1080, 1350      # Instagram 4:5 dikey

@@ -266,7 +266,7 @@ class ReelRenderer:
     def _scene_outro(self, d, lt, dur, enter, dx):
         k = enter
         cy = VH // 2 - 260
-        for txt in ("Günün kritik piyasa gelişmeleri", "veriyle, her gün"):
+        for txt in ("Doğru borsa haberleri için", "bizi takip edin"):
             f = card.font("SemiBold", 42)
             tw = d.textlength(txt, font=f)
             d.text(((VW - tw) // 2, cy), txt, font=f, fill=_alpha(card.GREY, k))
@@ -331,11 +331,12 @@ def render_video(post: dict, background: Image.Image, chart: tuple | None, out_p
         return None
     scene_texts = build_scenes(post, chart)
     # Kapanış sahnesi seslendirilmez (kredi tasarrufu); yalnızca ekranda görünür
-    spoken = [t for n, t in scene_texts if n != "outro"]
-    audio = voice.synthesize(spoken, ffmpeg, outro_silence=DEFAULT_DUR["outro"]) if voiced else None
+    spoken = [config.REEL_OUTRO if n == "outro" else t for n, t in scene_texts]
+    audio = voice.synthesize(spoken, ffmpeg, cache_last=True) if voiced else None
     if audio:
         wav, durs = audio
-        durs = [max(d, 1.8) for d in durs] + [DEFAULT_DUR["outro"]]
+        durs = [max(d, 1.8) for d in durs]
+        durs[-1] = max(durs[-1] + 0.6, DEFAULT_DUR["outro"])   # takip çağrısı ekranda biraz kalsın
     else:
         wav, durs = None, [DEFAULT_DUR[n] for n, _ in scene_texts]
     scenes = [(n, t, d) for (n, t), d in zip(scene_texts, durs)]

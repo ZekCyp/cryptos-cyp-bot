@@ -5,6 +5,7 @@ Rakamlar seslendirmeden önce Türkçe okunuşa çevrilir ("%23,9" -> "yüzde yi
 Anahtar yoksa veya servis yanıt vermezse None döner ve video sessiz üretilir."""
 from __future__ import annotations
 
+import hashlib
 import io
 import logging
 import re
@@ -112,30 +113,48 @@ def _mp3_to_pcm(mp3: bytes, ffmpeg: str) -> bytes:
     return proc.stdout
 
 
+def _cached_mp3(text: str) -> bytes:
+    """Her seferinde aynı olan metinler (ör. kapanış cümlesi) yalnızca bir kez seslendirilir;
+    ses dosyası state/ klasöründe saklanır ve sonraki videolarda kredi harcanmaz."""
+    key = hashlib.sha1(f"{config.ELEVENLABS_VOICE_ID}|{config.ELEVENLABS_MODEL}|{text}".encode()).hexdigest()[:12]
+    path = config.STATE_DIR / f"tts-{key}.mp3"
+    if path.exists():
+        log.info("Kapanış seslendirmesi önbellekten alındı (kredi harcanmadı).")
+        return path.read_bytes()
+    data = _tts_mp3(text)
+    config.STATE_DIR.mkdir(exist_ok=True)
+    path.write_bytes(data)
+    return data
+
+
 def synthesize(segments: list[str], ffmpeg: str, gap: float = 0.25,
-               outro_silence: float = 0.0) -> tuple[bytes, list[float]] | None:
-    """Sahne metinlerini seslendirir. (tek parça WAV, her sahnenin süresi) döner."""
+               cache_last: bool = False) -> tuple[bytes, list[float]] | None:
+    """Sahne metinlerini seslendirir. (tek parça WAV, her sahnenin süresi) döner.
+    cache_last: son sahne (kapanış cümlesi) önbellekten kullanılır."""
     if not (config.ELEVENLABS_API_KEY and config.ELEVENLABS_VOICE_ID):
         log.info("ElevenLabs anahtarı/ses kimliği yok, Reels sessiz üretilecek.")
         return None
-    pcm, durations = b"", []
+    pcm, durations, charged = b"", [], 0
     silence = b"\x00\x00" * int(RATE * gap)
     try:
-        for seg in segments:
+        for i, seg in enumerate(segments):
             spoken = speakable(seg)
-            data = _mp3_to_pcm(_tts_mp3(spoken), ffmpeg) + silence
+            if cache_last and i == len(segments) - 1:
+                mp3 = _cached_mp3(spoken)
+            else:
+                mp3 = _tts_mp3(spoken)
+                charged += len(spoken)
+            data = _mp3_to_pcm(mp3, ffmpeg) + silence
             pcm += data
             durations.append(len(data) / 2 / RATE)
     except Exception as exc:
         log.warning("Seslendirme başarısız, Reels sessiz üretilecek: %s", exc)
         return None
-    pcm += b"\x00\x00" * int(RATE * outro_silence)   # sessiz kapanış sahnesi
     buf = io.BytesIO()
     with wave.open(buf, "wb") as w:
         w.setnchannels(1)
         w.setsampwidth(2)
         w.setframerate(RATE)
         w.writeframes(pcm)
-    chars = sum(len(speakable(s)) for s in segments)
-    log.info("Seslendirme hazır: %.1f sn, %d karakter (ElevenLabs).", sum(durations), chars)
+    log.info("Seslendirme hazır: %.1f sn, yaklaşık %d kredi (ElevenLabs).", sum(durations), charged)
     return buf.getvalue(), durations

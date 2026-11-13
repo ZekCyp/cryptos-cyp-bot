@@ -98,7 +98,7 @@ jobs:
         run: |
           git config user.name "cryptos-bot"
           git config user.email "cryptos-bot@users.noreply.github.com"
-          git add state/history.json
+          git add state/
           git diff --cached --quiet || git commit -qm "paylaşım: $(date -u +%Y-%m-%dT%H:%MZ)"
           git pull -q --rebase && git push -q
 
