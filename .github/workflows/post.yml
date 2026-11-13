@@ -45,6 +45,9 @@ jobs:
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL }}
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
           CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          ELEVENLABS_VOICE_ID: ${{ secrets.ELEVENLABS_VOICE_ID }}
+          ELEVENLABS_MODEL: ${{ vars.ELEVENLABS_MODEL }}
         run: python -m bot.main prepare
 
       - name: Görselleri herkese açık adrese yükle (media dalı)
