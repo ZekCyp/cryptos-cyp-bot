@@ -798,5 +798,15 @@
     "media_id": "18116587442145763",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-13T10:08:02.330220+00:00",
+    "link": "https://www.cnbc.com/2026/11/13/nvidia-stock-jensen-affair-ai.html",
+    "title": "Nvidia on track for longest weekly losing streak since 2012 as market value sinks by $1.6 trillion",
+    "headline": "NVIDIA'DA LİDERLİK DEĞİŞİMİ SONRASI PİYASA DEĞERİNDE 1,6 TRİLYON DOLAR KAYIP",
+    "image": "posts/20261113-1300.jpg",
+    "media_id": "18063476525535242",
+    "type": "news",
+    "format": "post"
   }
 ]
