@@ -808,5 +808,15 @@
     "media_id": "18063476525535242",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-13T15:06:01.113278+00:00",
+    "link": "https://www.cnbc.com/2026/11/13/us-seizes-binance-hack-crypto.html",
+    "title": "U.S. seizes $1.2 billion in cryptocurrency stolen from Binance",
+    "headline": "ABD ADALET BAKANLIĞI BINANCE HIRSIZLIĞINDA EL KOYDU",
+    "image": "posts/20261113-1801.jpg",
+    "media_id": "17966922348078596",
+    "type": "news",
+    "format": "reels"
   }
 ]
