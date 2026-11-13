@@ -72,9 +72,9 @@ def _alpha(color: tuple, a: float) -> tuple:
 
 class ReelRenderer:
     def __init__(self, post: dict, background: Image.Image, chart: tuple | None,
-                 scenes: list[tuple[str, str, float]]):
+                 scenes: list[tuple[str, str, float]], subtitles: bool = True):
         """scenes: [(ad, altyazı metni, süre sn), ...]"""
-        self.post, self.chart, self.scenes = post, chart, scenes
+        self.post, self.chart, self.scenes, self.subtitles = post, chart, scenes, subtitles
         self.total = sum(d for _, _, d in scenes)
         bg = _cover(background).filter(ImageFilter.GaussianBlur(6)).convert("RGBA")
         self.base = Image.alpha_composite(bg, Image.new("RGBA", (VW, VH), card.NAVY + (185,)))
@@ -130,7 +130,7 @@ class ReelRenderer:
         dx = int((1 - enter) * 60)
         getattr(self, f"_scene_{name}")(d, lt, dur, enter, dx)
 
-        if name != "outro":
+        if self.subtitles and name != "outro":   # altyazı yalnızca sesli videolarda (sesin metni)
             self._subtitle(d, name, lt, dur)
         fy = BOTTOM + 10
         d.rectangle((L, fy + 6, L + 12, fy + 18), fill=card.CYAN + (255,))
@@ -347,7 +347,7 @@ def render_video(post: dict, background: Image.Image, chart: tuple | None, out_p
         audio_in = ["-i", str(wav_path)]
     else:
         audio_in = ["-f", "lavfi", "-t", f"{total:.2f}", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100"]
-    r = ReelRenderer(post, background, chart, scenes)
+    r = ReelRenderer(post, background, chart, scenes, subtitles=bool(wav))
     cmd = [ffmpeg, "-y", "-loglevel", "error",
            "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{VW}x{VH}", "-r", str(FPS), "-i", "-", *audio_in,
            "-c:v", "libx264", "-preset", "medium", "-crf", "23", "-pix_fmt", "yuv420p", "-profile:v", "high",
