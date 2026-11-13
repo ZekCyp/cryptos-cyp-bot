@@ -828,5 +828,15 @@
     "media_id": "17925508317224748",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-13T19:57:52.011426+00:00",
+    "link": "https://decrypt.co/383231/bitcoin-hits-12-week-low-fed-rate-fears-undo-summer-rally",
+    "title": "Bitcoin Hits 12-Week Low as Fed Rate Fears Undo Most of Summer Rally",
+    "headline": "ENFLASYON VE FED KAYGILARI BITCOIN DÜŞÜŞÜNÜ TETİKLEDİ",
+    "image": "posts/20261113-2253.jpg",
+    "media_id": "18102651596385076",
+    "type": "news",
+    "format": "reels"
   }
 ]
