@@ -120,6 +120,15 @@ ALANLAR:
 - impacts.price: Fiyat / Trend Dinamikleri (1-2 cümle).
 - impacts.retail: Küçük Yatırımcı İçin Risk/Fırsat Çerçevesi (1-2 cümle, tavsiye değil, nesnel çerçeve).
 - cta: Yorumlarda etkileşim başlatacak profesyonel piyasa sorusu (tek soru).
+- reel: Reels videosu için ekran metni ve seslendirme. Ciddi haber bülteni tonunda, sade konuşma dili.
+  Kurum/ülke adını açıkça söyle. Rakamlar yalnızca kaynakta olanlar; rakamları rakamla yaz (ör. "636 milyon
+  dolar", "yüzde 23,9"), harfle yazma. Rakamlara ek getirme ("yüzde 4'e" değil "yüzde 4 seviyesine").
+  Yatırım tavsiyesi verme.
+  * reel.hook_text: Videonun İLK KARESİNDE büyük puntoyla görünecek kanca. En çarpıcı rakam veya gerçek,
+    EN FAZLA 7 kelime (ör. "1 günde 636 milyon dolar çıktı"). Soru da olabilir. Tık tuzağı yok.
+  * reel.hook: Kancanın seslendirmesi, tek kısa cümle (en fazla 70 karakter).
+  * reel.what: Ne oldu? 1-2 kısa cümle (en fazla 160 karakter).
+  * reel.why: Neden önemli? Piyasa etkisini anlatan 2 kısa cümle (en fazla 200 karakter).
 
 {market}
 
@@ -164,6 +173,10 @@ WRITE_SCHEMA = {
         "cta": {"type": "STRING"},
         "ticker": {"type": "STRING"},
         "hashtags": {"type": "ARRAY", "items": {"type": "STRING"}},
+        "reel": {"type": "OBJECT",
+                 "properties": {"hook_text": {"type": "STRING"}, "hook": {"type": "STRING"},
+                                "what": {"type": "STRING"}, "why": {"type": "STRING"}},
+                 "required": ["hook_text", "hook", "what", "why"]},
     },
     "required": ["category", "headline", "metric1", "metric2", "summary", "image_prompt", "hook",
                  "context", "impacts", "cta", "ticker"],

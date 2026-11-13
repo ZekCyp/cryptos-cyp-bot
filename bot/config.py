@@ -59,8 +59,19 @@ IG_API_HOST = "https://graph.instagram.com"
 IG_API_VERSION = os.getenv("IG_API_VERSION", "v26.0")
 
 # Görsel
-# Reels: "gün-saat" çiftleri (gün: 0=pazartesi ... 6=pazar). Varsayılan: pzt, çrş, cuma 18:00
-REELS_SLOTS = os.getenv("REELS_SLOTS", "0-18,2-18,4-18")
+# Reels: "gün-saat" çiftleri (gün: 0=pazartesi ... 6=pazar). Varsayılan: tüm haber paylaşımları Reels
+# (her gün 13, 18, 21; pazar ve pazartesi 09:00 haberi de). Sabah kapanış özeti görsel olarak kalır.
+_ALL_NEWS_SLOTS = ",".join([f"{d}-{h}" for d in range(7) for h in (13, 18, 21)] + ["6-9", "0-9"])
+REELS_SLOTS = os.getenv("REELS_SLOTS") or _ALL_NEWS_SLOTS
+
+# ElevenLabs seslendirme (anahtar yoksa video sessiz üretilir)
+ELEVENLABS_API_KEY = os.getenv("ELEVENLABS_API_KEY", "")
+ELEVENLABS_VOICE_ID = os.getenv("ELEVENLABS_VOICE_ID", "")
+ELEVENLABS_MODEL = os.getenv("ELEVENLABS_MODEL") or "eleven_flash_v2_5"   # en ekonomik model
+# Seslendirilecek Reels saatleri ("gün-saat"; "*" = her gün). Diğer Reels sessiz + altyazılı çıkar.
+# Varsayılan: her gün yalnızca 18:00 (ayda ~30 Reels × ~400 karakter ≈ 12.000 kredi)
+VOICED_SLOTS = os.getenv("VOICED_SLOTS") or "*-18"
+REEL_OUTRO = "Günün kritik piyasa verileri için Cryptos sayfasını takip edin."
 NEWS_STORY_ENABLED = os.getenv("NEWS_STORY_ENABLED", "true").lower() not in ("0", "false", "no")
 CAROUSEL_ENABLED = os.getenv("CAROUSEL_ENABLED", "true").lower() not in ("0", "false", "no")
 CARD_W, CARD_H = 1080, 1350      # Instagram 4:5 dikey

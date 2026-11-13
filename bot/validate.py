@@ -111,6 +111,7 @@ def check_post(post: dict, source_text: str) -> list[str]:
         post["headline"], post["metric1"]["label"], post["metric1"]["value"],
         post["metric2"]["label"], post["metric2"]["value"], post["summary"], post["hook"],
         post["context"], *post["impacts"].values(), post["cta"],
+        *(post.get("reel") or {}).values(),
     ])
     bad_nums = unverified_numbers(text_fields, source_text)
     if bad_nums:
@@ -119,6 +120,11 @@ def check_post(post: dict, source_text: str) -> list[str]:
     bad_words = banned_phrases(text_fields)
     if bad_words:
         errors.append("Yasaklı/amatör ifadeler: " + ", ".join(bad_words))
+    reel = post.get("reel") or {}
+    if reel and len((reel.get("hook_text") or "").split()) > 8:
+        errors.append("reel.hook_text en fazla 7 kelime olmalı.")
+    if reel and sum(len(reel.get(k) or "") for k in ("hook", "what", "why")) > 520:
+        errors.append("Reels seslendirmesi çok uzun (hook+what+why en fazla ~450 karakter).")
     if len(post.get("caption", "")) > 2150:
         errors.append("Instagram açıklaması 2200 karakter sınırını aşıyor.")
     return errors

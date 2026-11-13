@@ -276,7 +276,8 @@ def prepare() -> int:
     if reels.is_reel_slot(now) and card.LAST_BACKGROUND is not None:
         config.POSTS_DIR.mkdir(exist_ok=True)
         video = reels.render_video(post, card.LAST_BACKGROUND, slides.LAST_CHART,
-                                   config.POSTS_DIR / f"{now:%Y%m%d-%H%M}-reel.mp4")
+                                   config.POSTS_DIR / f"{now:%Y%m%d-%H%M}-reel.mp4",
+                                   voiced=reels.is_voiced_slot(now) or os.getenv("POST_FORMAT") == "reels")
     if story_image is None and config.NEWS_STORY_ENABLED:
         try:
             story_image = slides.build_post_story(image, has_more=bool(extras))
