@@ -788,5 +788,15 @@
     "media_id": "18098636534673987",
     "type": "news",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-13T06:01:24.947763+00:00",
+    "link": "",
+    "title": "Kapanış özeti 2026-11-12",
+    "headline": "DÜNÜ NASIL KAPATTIK · 12 KASIM PERŞEMBE",
+    "image": "posts/20261113-0900.jpg",
+    "media_id": "18116587442145763",
+    "type": "rates",
+    "format": "post"
   }
 ]
