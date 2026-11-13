@@ -19,6 +19,7 @@ from . import card, config
 
 log = logging.getLogger(__name__)
 VW, VH, FPS = 1080, 1920, 30
+ZOOM_MAX = 1.12        # video boyunca arka plan %12 yakınlaşır
 DEFAULT_DUR = {"hook": 2.8, "what": 5.5, "why": 8.0, "chart": 5.0, "outro": 3.2}
 L, R = 72, 1080 - 150           # sağdaki beğeni/yorum simgelerine yer bırak
 TOP, BOTTOM = 230, 1920 - 400
@@ -76,13 +77,17 @@ class ReelRenderer:
         """scenes: [(ad, altyazı metni, süre sn), ...]"""
         self.post, self.chart, self.scenes, self.subtitles = post, chart, scenes, subtitles
         self.total = sum(d for _, _, d in scenes)
-        bg = _cover(background).filter(ImageFilter.GaussianBlur(6)).convert("RGBA")
-        self.base = Image.alpha_composite(bg, Image.new("RGBA", (VW, VH), card.NAVY + (185,)))
-        d = ImageDraw.Draw(self.base)
+        # Arka plan görseli (Flux) videonun yıldızı: kancada belirgin, sonra okunabilirlik için koyulaşır.
+        # Tüm video boyunca yavaş yakınlaşma (Ken Burns) hareket hissi verir.
+        self.bg_big = _cover(background, ZOOM_MAX).filter(ImageFilter.GaussianBlur(1.2)).convert("RGB")
+        self.grid = Image.new("RGBA", (VW, VH), (0, 0, 0, 0))
+        g = ImageDraw.Draw(self.grid)
         for x in range(0, VW, 54):
-            d.line([(x, 0), (x, VH)], fill=(120, 170, 220, 14))
+            g.line([(x, 0), (x, VH)], fill=(120, 170, 220, 12))
         for y in range(0, VH, 54):
-            d.line([(0, y), (VW, y)], fill=(120, 170, 220, 14))
+            g.line([(0, y), (VW, y)], fill=(120, 170, 220, 12))
+        self.ov_light = _gradient((70, 95, 150, 225))      # kanca: görsel net görünür
+        self.ov_dark = _gradient((175, 185, 195, 230))     # bilgi sahneleri: metin okunur
         self.tmp = ImageDraw.Draw(Image.new("RGB", (10, 10)))
         reel = post.get("reel") or {}
         self.hook_text = card.tr_upper(card.strip_emoji(reel.get("hook_text") or post["headline"]))
@@ -135,7 +140,20 @@ class ReelRenderer:
         fy = BOTTOM + 10
         d.rectangle((L, fy + 6, L + 12, fy + 18), fill=card.CYAN + (255,))
         card.draw_spaced(d, (L + 26, fy), config.SIGNATURE, card.font("Bold", 24), card.WHITE + (255,), 1.6)
-        return Image.alpha_composite(self.base, layer).convert("RGB")
+        return Image.alpha_composite(self._background(t, name, lt), layer).convert("RGB")
+
+    def _background(self, t: float, name: str, lt: float) -> Image.Image:
+        z = 1.0 + (ZOOM_MAX - 1.0) * min(1.0, t / max(self.total, 0.1))
+        bw, bh = self.bg_big.size
+        cw, ch = min(bw, VW * ZOOM_MAX / z), min(bh, VH * ZOOM_MAX / z)
+        left, top = (bw - cw) / 2, (bh - ch) / 2
+        bg = self.bg_big.resize((VW, VH), Image.BILINEAR, box=(left, top, left + cw, top + ch)).convert("RGBA")
+        k = 0.0 if name == "hook" else _ease(lt / 0.5) if self._first_after_hook(name) else 1.0
+        ov = self.ov_light if k <= 0 else self.ov_dark if k >= 1 else Image.blend(self.ov_light, self.ov_dark, k)
+        return Image.alpha_composite(Image.alpha_composite(bg, ov), self.grid)
+
+    def _first_after_hook(self, name: str) -> bool:
+        return len(self.scenes) > 1 and self.scenes[1][0] == name
 
     def _subtitle(self, d, name, lt, dur):
         chunks = self.sub_chunks.get(name) or []
@@ -172,9 +190,11 @@ class ReelRenderer:
         height = len(lines) * lh + 40 + f_val.size + 20 + 40
         y = self._block_top(height)
         for ln in lines:
+            d.text((L + 3, y + 4), ln, font=f, fill=(0, 0, 0, 150))       # gölge: net görselde okunurluk
             d.text((L, y), ln, font=f, fill=card.WHITE + (255,))
             y += lh
         y += 40
+        d.text((L + 3, y + 4), val, font=f_val, fill=(0, 0, 0, 150))
         glow = 0.75 + 0.25 * (0.5 + 0.5 * math.sin(lt * 4))
         d.text((L, y), val, font=f_val, fill=_alpha(card.CYAN, glow))
         y += f_val.size + 20
@@ -284,11 +304,29 @@ class ReelRenderer:
         d.text(((VW - tw) // 2, cy + 20), cta, font=fc, fill=_alpha(card.CYAN, k))
 
 
-def _cover(img: Image.Image) -> Image.Image:
-    scale = max(VW / img.width, VH / img.height)
+def _cover(img: Image.Image, factor: float = 1.0) -> Image.Image:
+    tw, th = int(VW * factor), int(VH * factor)
+    scale = max(tw / img.width, th / img.height)
     img = img.resize((math.ceil(img.width * scale), math.ceil(img.height * scale)), Image.LANCZOS)
-    left, top = (img.width - VW) // 2, (img.height - VH) // 2
-    return img.crop((left, top, left + VW, top + VH))
+    left, top = (img.width - tw) // 2, (img.height - th) // 2
+    return img.crop((left, top, left + tw, top + th))
+
+
+def _gradient(alphas: tuple[int, int, int, int]) -> Image.Image:
+    """Üstten alta lacivert karartma: (üst, orta-üst, orta-alt, alt) opaklık değerleri."""
+    a0, a1, a2, a3 = alphas
+    col = Image.new("RGBA", (1, VH))
+    px = col.load()
+    for y in range(VH):
+        u = y / (VH - 1)
+        if u < 1 / 3:
+            a = a0 + (a1 - a0) * u * 3
+        elif u < 2 / 3:
+            a = a1 + (a2 - a1) * (u - 1 / 3) * 3
+        else:
+            a = a2 + (a3 - a2) * (u - 2 / 3) * 3
+        px[0, y] = card.NAVY + (int(a),)
+    return col.resize((VW, VH))
 
 
 def chart_sentence(chart: tuple) -> str:
