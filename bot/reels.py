@@ -266,7 +266,7 @@ class ReelRenderer:
     def _scene_outro(self, d, lt, dur, enter, dx):
         k = enter
         cy = VH // 2 - 260
-        for txt in ("Doğru borsa haberleri için", "bizi takip edin"):
+        for txt in ("Borsa haberleri için", "bizi takip edin"):
             f = card.font("SemiBold", 42)
             tw = d.textlength(txt, font=f)
             d.text(((VW - tw) // 2, cy), txt, font=f, fill=_alpha(card.GREY, k))
