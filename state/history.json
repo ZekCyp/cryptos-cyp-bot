@@ -818,5 +818,15 @@
     "media_id": "17966922348078596",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-13T18:04:01.372753+00:00",
+    "link": "https://www.cnbc.com/2026/11/13/us-inflation-outlook-federal-reserve-rate-hike.html",
+    "title": "Bessent blames Lutnick’s Commerce as he slams Nvidia chip ‘leakage’ to China",
+    "headline": "BESSENT, ÇİN ÇİP SEVKİYATI VE SIZINTI İDDİALARINI HEDEF ALDI",
+    "image": "posts/20261113-2101.jpg",
+    "media_id": "17925508317224748",
+    "type": "news",
+    "format": "post"
   }
 ]
