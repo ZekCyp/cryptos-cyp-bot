@@ -848,5 +848,15 @@
     "media_id": "18147417658606022",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-14T10:06:06.595115+00:00",
+    "link": "https://cointelegraph.com/markets/bitcoin-etf-outflows-2-35-billion-blackrock-11-session-streak?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Bitcoin ETFs shed $2.35B in 2 weeks, BlackRock’s losing streak hits 11",
+    "headline": "ABD SPOT BITCOIN ETF’LERİNDE İKİ HAFTALIK ÇIKIŞLAR DEVAM EDİYOR",
+    "image": "posts/20261114-1300.jpg",
+    "media_id": "17979389757149865",
+    "type": "news",
+    "format": "reels"
   }
 ]
