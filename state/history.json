@@ -858,5 +858,15 @@
     "media_id": "17979389757149865",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-14T15:05:56.148533+00:00",
+    "link": "https://www.tomshardware.com/tech-industry/artificial-intelligence/researchers-allege-deepseek-kimi-and-other-chinese-ai-models-were-trained-on-export-controlled-nvidia-blackwell-chips-statistical-analysis-on-model-weights-reveals-high-correlation-to-nvidia-hardware",
+    "title": "Researchers allege DeepSeek, Kimi, and other Chinese AI models were trained using banned Nvidia Blackwell GPUs",
+    "headline": "ÇİN YAPAY ZEKA MODELLERİNDE NVIDIA ÇİP İZİ SAPTANDI",
+    "image": "posts/20261114-1801.jpg",
+    "media_id": "18124482407287779",
+    "type": "news",
+    "format": "reels"
   }
 ]
