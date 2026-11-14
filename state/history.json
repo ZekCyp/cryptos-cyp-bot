@@ -868,5 +868,15 @@
     "media_id": "18124482407287779",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-14T18:07:34.908687+00:00",
+    "link": "https://bitcoinmagazine.com/markets/bitcoin-price-crashes-13-percent-65600",
+    "title": "Bitcoin Price Falls 14% in a Week to $65,000 as Weekend Selling Breaks Friday’s Low",
+    "headline": "BITCOIN FİYATI HAFTA SONU SATIŞLARIYLA 65 BİN DOLARA GERİLEDİ",
+    "image": "posts/20261114-2100.jpg",
+    "media_id": "17999295003021216",
+    "type": "news",
+    "format": "reels"
   }
 ]
