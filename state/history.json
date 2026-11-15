@@ -888,5 +888,15 @@
     "media_id": "18039020789902787",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-15T10:41:25.227955+00:00",
+    "link": "https://cointelegraph.com/markets/bitcoin-four-month-low-62k-crypto-market-selloff?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Bitcoin falls to four-month low near $62K as crypto selloff deepens",
+    "headline": "BITCOIN DÖRT AYIN EN DÜŞÜK SEVİYESİNE GERİLEDİ",
+    "image": "posts/20261115-1335.jpg",
+    "media_id": "18005285831805903",
+    "type": "news",
+    "format": "reels"
   }
 ]
