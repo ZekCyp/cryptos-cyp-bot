@@ -898,5 +898,15 @@
     "media_id": "18005285831805903",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-15T15:07:28.316119+00:00",
+    "link": "https://decrypt.co/383282/bitcoin-etfs-lose-2-1-billion-november-outflow-streak-seven-days",
+    "title": "Bitcoin ETFs Lose $2.1 Billion in November as Outflow Streak Hits Seven Days",
+    "headline": "ABD SPOT BITCOIN ETF ÇIKIŞLARI 2,1 MİLYAR DOLARA ULAŞTI",
+    "image": "posts/20261115-1801.jpg",
+    "media_id": "18129361282847670",
+    "type": "news",
+    "format": "reels"
   }
 ]
