@@ -938,5 +938,15 @@
     "media_id": "18110810936261166",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-16T15:42:13.924690+00:00",
+    "link": "https://bitcoinmagazine.com/news/strategy-mstr-adds-485-bitcoin-holdings",
+    "title": "Strategy (MSTR) Adds 485 Bitcoin for $33.4 Million as It Spends $228 Million Buying Back Preferred Stock",
+    "headline": "STRATEGY 485 ADET BITCOIN ALIMI GERÇEKLEŞTİRDİ",
+    "image": "posts/20261116-1822.jpg",
+    "media_id": "18172398595499991",
+    "type": "news",
+    "format": "reels"
   }
 ]
