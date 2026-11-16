@@ -928,5 +928,15 @@
     "media_id": "18105150695364519",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-16T10:05:10.669077+00:00",
+    "link": "https://cointelegraph.com/news/dbs-jpmorgans-kinexys-launch-tokenized-transfers?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "DBS, JPMorgan’s Kinexys launch 24/7 transfers of tokenized deposits",
+    "headline": "DBS VE JPMORGAN KINEXYS İLE KESİNTİSİZ TOKEN TRANSFERİNİ BAŞLATTI",
+    "image": "posts/20261116-1301.jpg",
+    "media_id": "18110810936261166",
+    "type": "news",
+    "format": "reels"
   }
 ]
