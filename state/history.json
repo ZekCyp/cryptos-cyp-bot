@@ -948,5 +948,15 @@
     "media_id": "18172398595499991",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-16T18:11:21.081612+00:00",
+    "link": "https://www.cnbc.com/2026/11/16/nvidia-stock-price-jensen-huang.html",
+    "title": "Nvidia stock falls as investors price in fallout from Jensen Huang's resignation",
+    "headline": "JENSEN HUANG'IN İSTİFASI SONRASI NVIDIA HİSSELERİ GERİLİYOR",
+    "image": "posts/20261116-2101.jpg",
+    "media_id": "17986065665901657",
+    "type": "news",
+    "format": "reels"
   }
 ]
