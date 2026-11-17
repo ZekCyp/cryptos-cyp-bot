@@ -968,5 +968,15 @@
     "media_id": "18653179243003824",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-17T10:08:58.044852+00:00",
+    "link": "https://cointelegraph.com/news/goldman-sachs-reports-122b-ether-etfs-etha-shares-jumps?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Goldman Sachs reports $1.22B in Ether ETFs as ETHA share count jumps",
+    "headline": "GOLDMAN SACHS ETHER ETF VARLIKLARINI 1,22 MİLYAR DOLARA ÇIKARDI",
+    "image": "posts/20261117-1301.jpg",
+    "media_id": "17965206750213532",
+    "type": "news",
+    "format": "reels"
   }
 ]
