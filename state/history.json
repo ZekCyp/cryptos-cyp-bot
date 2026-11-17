@@ -988,5 +988,15 @@
     "media_id": "17968859195980169",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-17T18:10:14.418127+00:00",
+    "link": "https://bitcoinmagazine.com/news/wells-fargo-ibit-stake-doubles-strategy-cut",
+    "title": "Wells Fargo More Than Doubles Its Bitcoin ETF Stake to $2.35 Billion",
+    "headline": "WELLS FARGO BITCOIN ETF VARLIĞINI İKİYE KATLADI",
+    "image": "posts/20261117-2101.jpg",
+    "media_id": "18417880069093957",
+    "type": "news",
+    "format": "reels"
   }
 ]
