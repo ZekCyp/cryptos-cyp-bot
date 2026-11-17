@@ -978,5 +978,15 @@
     "media_id": "17965206750213532",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-17T15:07:48.406607+00:00",
+    "link": "https://www.bbc.co.uk/news/articles/cwq6e2qgvmlgo?at_medium=RSS&at_campaign=rss",
+    "title": "How new US chip restrictions on South East Asia will hit China",
+    "headline": "ABD'DEN YAPAY ZEKA ÇİPLERİ İÇİN YENİ SINIRLAMALAR",
+    "image": "posts/20261117-1801.jpg",
+    "media_id": "17968859195980169",
+    "type": "news",
+    "format": "reels"
   }
 ]
