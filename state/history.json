@@ -958,5 +958,15 @@
     "media_id": "17986065665901657",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-17T06:01:37.875520+00:00",
+    "link": "",
+    "title": "Kapanış özeti 2026-11-16",
+    "headline": "DÜNÜ NASIL KAPATTIK · 16 KASIM PAZARTESİ",
+    "image": "posts/20261117-0901.jpg",
+    "media_id": "18653179243003824",
+    "type": "rates",
+    "format": "post"
   }
 ]
