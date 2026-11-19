@@ -1058,5 +1058,15 @@
     "media_id": "18061259837802247",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-19T15:09:30.511014+00:00",
+    "link": "https://www.cnbc.com/2026/11/18/anthropic-ipo-ai-offering-price.html",
+    "title": "Anthropic IPO raises over $81 billion in largest offering on record, topping SpaceX",
+    "headline": "YAPAY ZEKA GİRİŞİMİ ANTHROPIC 81,3 MİLYAR DOLAR HALKA ARZ TOPLADI",
+    "image": "posts/20261119-1801.jpg",
+    "media_id": "17926014876444130",
+    "type": "news",
+    "format": "reels"
   }
 ]
