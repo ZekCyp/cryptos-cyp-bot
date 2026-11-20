@@ -1088,5 +1088,15 @@
     "media_id": "18140746408638989",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-20T10:09:21.066354+00:00",
+    "link": "https://cointelegraph.com/markets/blackrock-ibit-record-single-day-outflow?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "BlackRock’s IBIT loses record $541M amid Anthropic market debut",
+    "headline": "BLACKROCK IBIT FONUNDAN REKOR ÇIKIŞ GERÇEKLEŞTİ",
+    "image": "posts/20261120-1301.jpg",
+    "media_id": "18364386823217237",
+    "type": "news",
+    "format": "reels"
   }
 ]
