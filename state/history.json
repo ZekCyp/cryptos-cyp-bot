@@ -1098,5 +1098,15 @@
     "media_id": "18364386823217237",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-20T15:20:05.436764+00:00",
+    "link": "https://cointelegraph.com/news/lagarde-europe-limited-window-tokenization-rules?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Lagarde warns Europe could miss chance to unify tokenized markets",
+    "headline": "AVRUPA MERKEZ BANKASI TOKENİZE VARLIK PİYASASINDA STANDART UYARISI YAPTI",
+    "image": "posts/20261120-1801.jpg",
+    "media_id": "17982181905135697",
+    "type": "news",
+    "format": "reels"
   }
 ]
