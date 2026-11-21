@@ -1128,5 +1128,15 @@
     "media_id": "17918275833519104",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-21T10:15:08.516069+00:00",
+    "link": "https://www.cnbc.com/2026/11/20/nvidias-7-week-losing-streak-is-longest-since-2008-financial-crisis.html",
+    "title": "Nvidia stock plunges 14%, wraps up longest weekly losing streak since 2008 financial crisis",
+    "headline": "NVIDIA HİSSELERİ YEDİ HAFTALIK DÜŞÜŞ SERİSİYLE SARSILDI",
+    "image": "posts/20261121-1300.jpg",
+    "media_id": "17917325286501484",
+    "type": "news",
+    "format": "reels"
   }
 ]
