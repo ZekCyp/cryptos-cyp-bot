@@ -1138,5 +1138,15 @@
     "media_id": "17917325286501484",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-21T15:10:48.820037+00:00",
+    "link": "https://decrypt.co/383754/ai-bubble-finally-popping-nvidia-crashes-48-wall-street-alarm",
+    "title": "Is the AI Bubble Finally Popping? Nvidia Crashes 48% as Wall Street Experts Sound the Alarm",
+    "headline": "NVIDIA VE YAPAY ZEKA HİSSELERİNDE TARİHİ SATIŞ BASKISI",
+    "image": "posts/20261121-1800.jpg",
+    "media_id": "18455145940122230",
+    "type": "news",
+    "format": "reels"
   }
 ]
