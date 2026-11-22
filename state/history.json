@@ -1168,5 +1168,15 @@
     "media_id": "18125846170915006",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-22T10:05:32.316085+00:00",
+    "link": "https://cointelegraph.com/news/chainflip-12m-crypto-hack-10-percent-bounty?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Chainflip confirms $12M hack, offers attacker 10% bounty",
+    "headline": "CHAİNFLİP KASALARINDAN ÇALINAN FONLAR İÇİN ÖDÜL TEKLİF ETTİ",
+    "image": "posts/20261122-1300.jpg",
+    "media_id": "17871999483662387",
+    "type": "news",
+    "format": "reels"
   }
 ]
