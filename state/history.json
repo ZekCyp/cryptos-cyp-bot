@@ -1158,5 +1158,15 @@
     "media_id": "17917588782514305",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-22T06:07:14.092066+00:00",
+    "link": "https://decrypt.co/383752/fraudsters-fake-crypto-exchanges-steal-37-million-sec",
+    "title": "Fraudsters Used Fake Crypto Exchanges to Steal $37 Million, SEC Alleges",
+    "headline": "ABD MENKUL KIYMETLER VE BORSA KOMİSYONU SAHTE KRİPTO PLATFORMLARINI ÇÖKERTTİ",
+    "image": "posts/20261122-0900.jpg",
+    "media_id": "18125846170915006",
+    "type": "news",
+    "format": "reels"
   }
 ]
