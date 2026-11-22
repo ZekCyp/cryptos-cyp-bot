@@ -52,7 +52,7 @@ jobs:
 
       - name: Görselleri herkese açık adrese yükle (media dalı)
         id: media
-        if: env.DRY_RUN != 'true'
+        if: env.DRY_RUN != 'true' && steps.prep.outputs.skip != 'true'
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
@@ -86,7 +86,7 @@ jobs:
           echo "Görsel klasörü: $BASE"
 
       - name: Instagram'da yayınla
-        if: env.DRY_RUN != 'true'
+        if: env.DRY_RUN != 'true' && steps.prep.outputs.skip != 'true'
         env:
           IG_ACCESS_TOKEN: ${{ secrets.IG_ACCESS_TOKEN }}
           IG_USER_ID: ${{ secrets.IG_USER_ID }}
@@ -94,7 +94,7 @@ jobs:
         run: python -m bot.main publish "${{ steps.media.outputs.url }}"
 
       - name: Paylaşım geçmişini kaydet
-        if: env.DRY_RUN != 'true'
+        if: env.DRY_RUN != 'true' && steps.prep.outputs.skip != 'true'
         run: |
           git config user.name "cryptos-bot"
           git config user.email "cryptos-bot@users.noreply.github.com"

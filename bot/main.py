@@ -242,6 +242,10 @@ def prepare() -> int:
     """09:00: güncel kur HİKÂYESİ + (salı-cumartesi) dünün KAPANIŞ ÖZETİ gönderisi.
     Pazar/pazartesi sabahı ve diğer saatlerde gönderi olarak haber paylaşılır."""
     now = datetime.now(TZ)
+    if now.date().isoformat() > config.END_DATE:
+        log.info("Proje %s tarihinde sona erdi; paylaşım yapılmıyor.", config.END_DATE)
+        _set_output("skip", "true")
+        return 0
     story_image = None
     if wants_rates(now):
         from . import rates

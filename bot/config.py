@@ -49,6 +49,9 @@ FEEDS = {
 # Genel haber akışları çok hacimli; finans/kripto haberlerini bastırmasın diye sınırlı sayıda alınır
 FEED_LIMITS = {"BBC Business": 12, "BBC World": 12, "CNBC World": 12}
 
+# Projenin bitiş tarihi (TSİ). Bu tarihten sonra bot hiçbir şey üretmez ve paylaşmaz (kredi de harcamaz).
+END_DATE = os.getenv("END_DATE") or "2026-12-10"
+
 NEWS_WINDOW_HOURS = int(os.getenv("NEWS_WINDOW_HOURS", "24"))
 MAX_ITEMS_TO_MODEL = 60          # modele gönderilecek en fazla haber
 MIN_ARTICLE_CHARS = 900          # bundan kısa metin = ücretli/okunamayan haber, atlanır
