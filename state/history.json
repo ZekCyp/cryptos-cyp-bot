@@ -1178,5 +1178,15 @@
     "media_id": "17871999483662387",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-22T15:04:35.105215+00:00",
+    "link": "https://www.tomshardware.com/tech-industry/policy/tsmc-reportedly-pauses-shipments-to-chinese-designers-after-u-s-export-rules-flag-decade-old-16nm-and-14nm-nodes-new-bis-controls-threaten-smartphone-tv-and-automotive-chips",
+    "title": "TSMC reportedly pauses shipments to Chinese designers after U.S. export rules flag decade-old 16nm and 14nm nodes",
+    "headline": "TSMC, ABD KURALLARI NEDENİYLE ÇİP SEVKİYATLARINI ASKIYA ALDI",
+    "image": "posts/20261122-1801.jpg",
+    "media_id": "18194897905409177",
+    "type": "news",
+    "format": "reels"
   }
 ]
