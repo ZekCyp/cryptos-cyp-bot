@@ -1198,5 +1198,15 @@
     "media_id": "17963152455255011",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-23T06:08:33.824700+00:00",
+    "link": "https://www.cnbc.com/2026/11/23/asia-markets-kospi-taiwan-china-csi300.html",
+    "title": "How Asian countries are looking to prop up markets as AI downturn sinks stocks",
+    "headline": "ASYA BORSALARINDAN YAPAY ZEKA ÇÖKÜŞÜNE KARŞI ÖNLEM HAMLESİ",
+    "image": "posts/20261123-0901.jpg",
+    "media_id": "18432699313145357",
+    "type": "news",
+    "format": "reels"
   }
 ]
