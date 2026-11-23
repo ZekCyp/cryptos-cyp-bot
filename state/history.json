@@ -1218,5 +1218,15 @@
     "media_id": "18082337336735659",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-23T18:07:32.268011+00:00",
+    "link": "https://cointelegraph.com/markets/bitcoin-rebounds-lows-nvidia-rally-sparks-500m-crypto-liquidations?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Bitcoin rebounds 17% from $55K lows as Nvidia rally sparks $500M crypto liquidations",
+    "headline": "NVIDIA CEO'SUNUN DÖNÜŞÜ KRİPTO VE ABD PİYASALARINI YÜKSELTTİ",
+    "image": "posts/20261123-2101.jpg",
+    "media_id": "17936578986420060",
+    "type": "news",
+    "format": "reels"
   }
 ]
