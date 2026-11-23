@@ -1208,5 +1208,15 @@
     "media_id": "18432699313145357",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-23T10:04:26.018594+00:00",
+    "link": "https://cointelegraph.com/markets/bitcoin-etfs-third-largest-weekly-outflows-1-8-billion?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Bitcoin ETFs shed $1.8B in third-largest weekly outflow",
+    "headline": "ABD SPOT BITCOIN ETF ÜRÜNLERİNDE BÜYÜK HAFTALIK ÇIKIŞ",
+    "image": "posts/20261123-1301.jpg",
+    "media_id": "18082337336735659",
+    "type": "news",
+    "format": "reels"
   }
 ]
