@@ -1238,5 +1238,15 @@
     "media_id": "17897019972436889",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-24T10:08:08.212802+00:00",
+    "link": "https://cointelegraph.com/markets/bitcoin-etfs-bleed-ibit-shares-gain?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound",
+    "title": "Bitcoin ETFs keep bleeding as BlackRock’s IBIT shares gain nearly 5%",
+    "headline": "ABD SPOT BITCOIN ETF’LERİNDE KASIM ÇIKIŞLARI 4,71 MİLYAR DOLARA ULAŞTI",
+    "image": "posts/20261124-1300.jpg",
+    "media_id": "18216477916365212",
+    "type": "news",
+    "format": "reels"
   }
 ]
