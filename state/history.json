@@ -1228,5 +1228,15 @@
     "media_id": "17936578986420060",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-24T06:01:20.149070+00:00",
+    "link": "",
+    "title": "Kapanış özeti 2026-11-23",
+    "headline": "DÜNÜ NASIL KAPATTIK · 23 KASIM PAZARTESİ",
+    "image": "posts/20261124-0900.jpg",
+    "media_id": "17897019972436889",
+    "type": "rates",
+    "format": "post"
   }
 ]
