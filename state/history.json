@@ -1258,5 +1258,15 @@
     "media_id": "18229938616338602",
     "type": "rates",
     "format": "post"
+  },
+  {
+    "ts": "2026-11-25T10:09:29.409520+00:00",
+    "link": "https://www.cnbc.com/2026/11/25/china-xiamen-boeing-deal.html",
+    "title": "China’s Xiamen Airlines to buy 50 Boeing jets in $7.4 billion deal",
+    "headline": "ÇİNLİ XIAMEN AİRLİNES'TAN BOEİNG'E 7,4 MİLYAR DOLARLIK SİPARİŞ",
+    "image": "posts/20261125-1301.jpg",
+    "media_id": "17872391457658150",
+    "type": "news",
+    "format": "reels"
   }
 ]
