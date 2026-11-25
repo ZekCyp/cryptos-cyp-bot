@@ -1248,5 +1248,15 @@
     "media_id": "18216477916365212",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-25T06:01:24.719231+00:00",
+    "link": "",
+    "title": "Kapanış özeti 2026-11-24",
+    "headline": "DÜNÜ NASIL KAPATTIK · 24 KASIM SALI",
+    "image": "posts/20261125-0900.jpg",
+    "media_id": "18229938616338602",
+    "type": "rates",
+    "format": "post"
   }
 ]
