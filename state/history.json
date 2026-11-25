@@ -1278,5 +1278,15 @@
     "media_id": "18139433602658371",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-25T18:08:42.559944+00:00",
+    "link": "https://bitcoinmagazine.com/news/cleanspark-987-million-loss-fiscal-2026",
+    "title": "CleanSpark Weighs Selling More Bitcoin Than It Mines After $987M Loss",
+    "headline": "CLEANSPARK FİNANSAL YILI 987 MİLYON DOLAR ZARARLA KAPATTI",
+    "image": "posts/20261125-2101.jpg",
+    "media_id": "18115114157336184",
+    "type": "news",
+    "format": "reels"
   }
 ]
