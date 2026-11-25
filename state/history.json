@@ -1268,5 +1268,15 @@
     "media_id": "17872391457658150",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-25T15:05:54.125920+00:00",
+    "link": "https://bitcoinmagazine.com/markets/bitcoin-price-falls-57500-nasdaq",
+    "title": "Bitcoin Price Slumps Below $57,500 as Nasdaq Sinks 4% at Open",
+    "headline": "BITCOIN FİYATI 57.500 DOLARIN ALTINA GERİLEDİ",
+    "image": "posts/20261125-1801.jpg",
+    "media_id": "18139433602658371",
+    "type": "news",
+    "format": "reels"
   }
 ]
