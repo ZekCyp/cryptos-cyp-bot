@@ -14,16 +14,17 @@ SIGNATURE = "KRİPTO İSTİHBARATI | @CRYPTOS.CYP"
 BRAND_TAG = "#CryptosCYP"
 MAX_HASHTAGS = 5
 # Model uygun etiket öneremezse kategoriye göre kullanılacak konu etiketleri
-DEFAULT_TOPIC_TAGS = {
-    "CRYPTO": ["#Bitcoin", "#Kripto", "#KriptoPara", "#BTC"],
-    "ETF": ["#Bitcoin", "#ETF", "#Kripto", "#Borsa"],
-    "SEMICONDUCTOR": ["#YapayZeka", "#Çip", "#Teknoloji", "#Borsa"],
-    "MACRO": ["#Ekonomi", "#Faiz", "#Fed", "#Piyasalar"],
-    "REGULATION": ["#Kripto", "#Regülasyon", "#SEC", "#Piyasalar"],
-    "GEOPOLITICS": ["#Ekonomi", "#Petrol", "#Altın", "#Piyasalar"],
-    "": ["#Ekonomi", "#Borsa", "#Kripto", "#Piyasalar"],
+DEFAULT_TOPIC_TAGS = {   # Türkiye'de aranan küçük harfli etiketler
+    "TURKEY": ["#dolar", "#borsaistanbul", "#bist100", "#ekonomi"],
+    "CRYPTO": ["#bitcoin", "#kripto", "#kriptopara", "#btc"],
+    "ETF": ["#bitcoin", "#kripto", "#borsa", "#yatırım"],
+    "SEMICONDUCTOR": ["#borsa", "#yapayzeka", "#teknoloji", "#yatırım"],
+    "MACRO": ["#dolar", "#faiz", "#altın", "#ekonomi"],
+    "REGULATION": ["#kripto", "#spk", "#borsa", "#ekonomi"],
+    "GEOPOLITICS": ["#altın", "#petrol", "#dolar", "#ekonomi"],
+    "": ["#ekonomi", "#dolar", "#borsa", "#kripto"],
 }
-HASHTAGS = BRAND_TAG + " #Bitcoin #Kripto #Borsa #Ekonomi"   # geriye dönük uyumluluk (5 etiket)
+HASHTAGS = BRAND_TAG + " #dolar #altın #borsaistanbul #ekonomi"   # geriye dönük uyumluluk (5 etiket)
 DISCLAIMER = "Bu içerik bilgilendirme amaçlıdır, yatırım tavsiyesi değildir."
 
 # Haber kaynakları (RSS). Biri çalışmazsa diğerleriyle devam edilir.
@@ -44,16 +45,25 @@ FEEDS = {
     "BBC Business": "https://feeds.bbci.co.uk/news/business/rss.xml",
     "BBC World": "https://feeds.bbci.co.uk/news/world/rss.xml",
     "CNBC World": "https://www.cnbc.com/id/100727362/device/rss/rss.html",
+    # Türkiye kaynakları (26 Kasım'da GitHub sunucusundan test edildi: akış ve makale metni okunabiliyor)
+    "AA Ekonomi": "https://www.aa.com.tr/tr/rss/default?cat=ekonomi",
+    "NTV Ekonomi": "https://www.ntv.com.tr/ekonomi.rss",
+    "TRT Haber Ekonomi": "https://www.trthaber.com/ekonomi_articles.rss",
+    "Habertürk Ekonomi": "https://www.haberturk.com/rss/ekonomi.xml",
+    "Bloomberg HT": "https://www.bloomberght.com/rss",
+    "CoinTürk": "https://coin-turk.com/feed",
 }
+TURKISH_FEEDS = {"AA Ekonomi", "NTV Ekonomi", "TRT Haber Ekonomi", "Habertürk Ekonomi", "Bloomberg HT", "CoinTürk"}
 
 # Genel haber akışları çok hacimli; finans/kripto haberlerini bastırmasın diye sınırlı sayıda alınır
-FEED_LIMITS = {"BBC Business": 12, "BBC World": 12, "CNBC World": 12}
+FEED_LIMITS = {"BBC Business": 10, "BBC World": 8, "CNBC World": 8,
+               "TRT Haber Ekonomi": 15, "Habertürk Ekonomi": 15, "Bloomberg HT": 15, "AA Ekonomi": 15}
 
-# Projenin bitiş tarihi (TSİ). Bu tarihten sonra bot hiçbir şey üretmez ve paylaşmaz (kredi de harcamaz).
-END_DATE = os.getenv("END_DATE") or "2026-12-10"
+# Projenin bitiş tarihi (TSİ, "YYYY-AA-GG"). Boşsa bot süresiz çalışır.
+END_DATE = os.getenv("END_DATE") or ""
 
 NEWS_WINDOW_HOURS = int(os.getenv("NEWS_WINDOW_HOURS", "24"))
-MAX_ITEMS_TO_MODEL = 60          # modele gönderilecek en fazla haber
+MAX_ITEMS_TO_MODEL = 75          # modele gönderilecek en fazla haber
 MIN_ARTICLE_CHARS = 900          # bundan kısa metin = ücretli/okunamayan haber, atlanır
 HISTORY_DAYS = 14                # aynı haberi tekrar paylaşmama süresi
 
@@ -75,6 +85,11 @@ ELEVENLABS_MODEL = os.getenv("ELEVENLABS_MODEL") or "eleven_flash_v2_5"   # en e
 # Varsayılan: TÜM Reels sesli (ayda ~99 Reels × ~65 kredi ≈ 6.500 kredi)
 VOICED_SLOTS = os.getenv("VOICED_SLOTS") or REELS_SLOTS
 REEL_OUTRO = "Borsa haberleri için bizi takip edin."   # bir kez seslendirilir, sonra önbellekten
+# ElevenLabs ücretsiz planında atıf zorunlu: açıklamalara eklenir (ücretsiz plana geçince true yapın)
+ELEVENLABS_ATTRIBUTION = os.getenv("ELEVENLABS_ATTRIBUTION", "false").lower() in ("1", "true", "yes")
+ATTRIBUTION_LINE = "🎙 Seslendirme: elevenlabs.io"
+# Salı-cumartesi 09:00 kapanış özeti sessiz Reels olarak çıkar (görsel gönderi yedek olarak kalır)
+CLOSE_REEL_ENABLED = os.getenv("CLOSE_REEL_ENABLED", "true").lower() not in ("0", "false", "no")
 NEWS_STORY_ENABLED = os.getenv("NEWS_STORY_ENABLED", "true").lower() not in ("0", "false", "no")
 CAROUSEL_ENABLED = os.getenv("CAROUSEL_ENABLED", "true").lower() not in ("0", "false", "no")
 CARD_W, CARD_H = 1080, 1350      # Instagram 4:5 dikey

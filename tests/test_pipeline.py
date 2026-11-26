@@ -25,6 +25,8 @@ GOOD = {
     "impacts": {"institutional": "Girişler en likit fonlarda yoğunlaştı.",
                 "price": "Spot talep satış baskısını dengeliyor.",
                 "retail": "Tek günlük veri trend teyidi değildir."},
+    "turkey_impact": "Kurumsal talebin toparlanması BTC/TL fiyatına da yansır; dolar/TL hareketi TL bazlı getiriyi "
+                     "ayrıca etkiler.",
     "cta": "Sizce bu giriş kalıcı bir dönüşün başlangıcı mı?",
 }
 
@@ -65,6 +67,17 @@ class ValidationTests(unittest.TestCase):
         errs = validate.check_post(main.normalize(bad, _news()[0]), ARTICLE + MARKET)
         self.assertTrue(any("Yasaklı" in e for e in errs), errs)
 
+    def test_investment_advice_blocked(self):
+        bad = json.loads(json.dumps(GOOD))
+        bad["turkey_impact"] = "Bu seviyeler alım fırsatı sunuyor."
+        errs = validate.check_post(main.normalize(bad, _news()[0]), ARTICLE + MARKET)
+        self.assertTrue(any("Yasaklı" in e for e in errs), errs)
+
+    def test_caption_has_turkey_section(self):
+        post = main.normalize(json.loads(json.dumps(GOOD)), _news()[0])
+        self.assertIn("TÜRK YATIRIMCI İÇİN NE ANLAMA GELİYOR?", post["caption"])
+        self.assertNotIn(config.ATTRIBUTION_LINE, post["caption"])     # atıf varsayılan olarak kapalı
+
 
 class PipelineTests(unittest.TestCase):
     def setUp(self):
@@ -78,6 +91,8 @@ class PipelineTests(unittest.TestCase):
         mock.patch.object(sources, "fetch_news", lambda *a, **k: _news()).start()
         mock.patch.object(sources, "fetch_market_snapshot", lambda: MARKET).start()
         mock.patch.object(sources, "fetch_article_text", lambda url: ARTICLE).start()
+        mock.patch.object(config, "MIN_ARTICLE_CHARS", 100).start()
+        mock.patch.dict("os.environ", {"POST_MODE": "haber", "POST_FORMAT": "kaydirmali"}).start()
 
     def tearDown(self):
         mock.patch.stopall()
@@ -97,8 +112,23 @@ class PipelineTests(unittest.TestCase):
     def test_prepare_refuses_when_unverifiable(self):
         bad = json.loads(json.dumps(GOOD))
         bad["metric1"]["value"] = "+999 Milyon $"
-        self.assertEqual(self._run([bad] * 6), 1)          # yayın iptal edilmeli
+        self.assertEqual(self._run([bad] * 30), 1)          # yayın iptal edilmeli
         self.assertFalse((self.tmp / "output/post.json").exists())
+
+
+class CloseReelTests(unittest.TestCase):
+    def test_silent_close_reel_renders(self):
+        from bot import rates, reels
+        if not reels._ffmpeg():
+            self.skipTest("ffmpeg yok")
+        rows = [rates._row(c, n, v, ch, 2) for c, n, v, ch in
+                (("USD/TRY", "Dolar/TL", 42.51, 0.12), ("XU100", "BIST 100", 10234.5, -0.8),
+                 ("ALTIN", "Gram altın", 5712.3, 1.1), ("BTC", "Bitcoin", 91234.0, 2.4))]
+        out = Path(tempfile.mkdtemp()) / "close.mp4"
+        with mock.patch.object(rates, "CLOSE_HOLD", 0.5), mock.patch.object(rates, "CLOSE_OUTRO", 0.5):
+            made = rates.build_close_reel(rows, datetime(2026, 11, 25).date(), datetime(2026, 11, 26, 9), out)
+        self.assertIsNotNone(made)
+        self.assertGreater(out.stat().st_size, 10_000)
 
 
 if __name__ == "__main__":

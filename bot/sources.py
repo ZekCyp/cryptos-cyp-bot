@@ -238,9 +238,51 @@ def fetch_quote(symbol: str) -> dict | None:
         return None
 
 
+GRAMS_PER_OUNCE = 31.1034768
+
+
+def _turkey() -> list[str]:
+    """Türk yatırımcının takip ettiği veriler: dolar/TL, euro/TL, gram altın, BIST 100, kripto/TL."""
+    lines = []
+    quotes = {}
+    for sym in ("USDTRY=X", "EURTRY=X", "XU100.IS", "GC=F"):
+        try:
+            r = SESSION.get(f"https://query1.finance.yahoo.com/v8/finance/chart/{sym}",
+                            params={"range": "5d", "interval": "1d"}, timeout=config.HTTP_TIMEOUT)
+            res = r.json()["chart"]["result"][0]
+            closes = [c for c in res["indicators"]["quote"][0]["close"] if c is not None]
+            if len(closes) >= 2:
+                quotes[sym] = (closes[-1], closes[-2])
+        except Exception as exc:
+            log.debug("Türkiye verisi alınamadı (%s): %s", sym, exc)
+    def tr(v, dec):
+        return f"{v:,.{dec}f}".replace(",", "§").replace(".", ",").replace("§", ".")
+    def chg(a, b):
+        return f"{(a / b - 1) * 100:+.2f}%".replace(".", ",")
+    for sym, label, dec in (("USDTRY=X", "Dolar/TL", 4), ("EURTRY=X", "Euro/TL", 4), ("XU100.IS", "BIST 100", 2)):
+        if sym in quotes:
+            last, prev = quotes[sym]
+            lines.append(f"{label}: {tr(last, dec)} | günlük değişim {chg(last, prev)}")
+    if "GC=F" in quotes and "USDTRY=X" in quotes:
+        (g, gp), (u, up) = quotes["GC=F"], quotes["USDTRY=X"]
+        gram, gram_prev = g * u / GRAMS_PER_OUNCE, gp * up / GRAMS_PER_OUNCE
+        lines.append(f"Gram altın (ons ve dolar/TL'den hesaplanan): {tr(gram, 2)} TL | günlük değişim {chg(gram, gram_prev)}")
+    try:
+        d = SESSION.get("https://api.coingecko.com/api/v3/simple/price",
+                        params={"ids": "bitcoin,ethereum", "vs_currencies": "try", "include_24hr_change": "true"},
+                        timeout=config.HTTP_TIMEOUT).json()
+        for cid, label in (("bitcoin", "Bitcoin/TL"), ("ethereum", "Ethereum/TL")):
+            if d.get(cid, {}).get("try"):
+                pct = f"{d[cid].get('try_24h_change') or 0:+.2f}%".replace(".", ",")
+                lines.append(f"{label}: {tr(d[cid]['try'], 0)} TL | 24s değişim {pct}")
+    except Exception as exc:
+        log.debug("Kripto/TL verisi alınamadı: %s", exc)
+    return ["TÜRKİYE: " + l for l in lines]
+
+
 def fetch_market_snapshot() -> str:
     lines: list[str] = []
-    for name, fn in (("CoinGecko", _coingecko), ("Korku&Açgözlülük", _fear_greed),
+    for name, fn in (("Türkiye", _turkey), ("CoinGecko", _coingecko), ("Korku&Açgözlülük", _fear_greed),
                      ("Farside BTC", lambda: _farside("btc")), ("Farside ETH", lambda: _farside("eth")),
                      ("Yahoo", _yahoo)):
         try:

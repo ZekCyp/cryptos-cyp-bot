@@ -20,7 +20,8 @@ from . import card, config
 log = logging.getLogger(__name__)
 VW, VH, FPS = 1080, 1920, 30
 ZOOM_MAX = 1.12        # video boyunca arka plan %12 yakınlaşır
-DEFAULT_DUR = {"hook": 2.8, "what": 5.5, "why": 8.0, "chart": 5.0, "outro": 3.2}
+DEFAULT_DUR = {"hook": 2.8, "what": 5.5, "why": 8.0, "turkey": 6.5, "chart": 5.0, "outro": 3.2}
+LAST_VOICED = False    # son videoda seslendirme gerçekten kullanıldı mı (atıf satırı için)
 L, R = 72, 1080 - 150           # sağdaki beğeni/yorum simgelerine yer bırak
 TOP, BOTTOM = 230, 1920 - 400
 
@@ -256,6 +257,34 @@ class ReelRenderer:
                 ty += lh
             y += h + 18
 
+    def _scene_turkey(self, d, lt, dur, enter, dx):
+        text = card.strip_emoji(self.post.get("turkey_impact") or "")
+        for size in (44, 40, 36, 33, 30):
+            f_body = card.font("Medium", size)
+            lines = card.wrap(d, text, f_body, R - L - 80)
+            lh = int(size * 1.42)
+            if 230 + len(lines) * lh + 60 <= BOTTOM - 170 - (TOP + 90):
+                break
+        lines = lines[:9]
+        box_h = len(lines) * lh + 60
+        y = self._block_top(230 + box_h)
+        f_t = card.font("ExtraBold", 66)
+        for ln in ("TÜRK YATIRIMCI", "İÇİN ANLAMI"):
+            d.text((L + dx, y), ln, font=f_t, fill=_alpha(card.WHITE, enter))
+            y += 80
+        d.rectangle((L, y + 14, L + 120, y + 22), fill=_alpha(card.RED, enter))
+        y += 70
+        k = _phase(lt, 0.3, 0.4)
+        if k <= 0:
+            return
+        d.rounded_rectangle((L, y, R, y + box_h), radius=18, fill=card.PANEL + (int(228 * k),),
+                            outline=_alpha(card.RED, 0.55 * k), width=2)
+        d.rectangle((L, y + 18, L + 8, y + box_h - 18), fill=_alpha(card.RED, k))
+        ty = y + 30
+        for ln in lines:
+            d.text((L + 40, ty), ln, font=f_body, fill=(230, 236, 244, int(255 * k)))
+            ty += lh
+
     def _scene_chart(self, d, lt, dur, enter, dx):
         series, name, unit = self.chart
         vals = [v for _, v in series]
@@ -341,6 +370,9 @@ def build_scenes(post: dict, chart: tuple | None) -> list[tuple[str, str]]:
     scenes = [("hook", reel.get("hook") or post["headline"]),
               ("what", reel.get("what") or post["summary"]),
               ("why", reel.get("why") or post["impacts"]["price"])]
+    turkey = reel.get("turkey") or post.get("turkey_impact")
+    if turkey and post.get("turkey_impact"):
+        scenes.append(("turkey", turkey))
     if chart:
         scenes.append(("chart", chart_sentence(chart)))
     scenes.append(("outro", ""))
@@ -370,7 +402,9 @@ def render_video(post: dict, background: Image.Image, chart: tuple | None, out_p
     scene_texts = build_scenes(post, chart)
     # Kapanış sahnesi seslendirilmez (kredi tasarrufu); yalnızca ekranda görünür
     spoken = [config.REEL_OUTRO if n == "outro" else t for n, t in scene_texts]
+    global LAST_VOICED
     audio = voice.synthesize(spoken, ffmpeg, cache_last=True) if voiced else None
+    LAST_VOICED = bool(audio)
     if audio:
         wav, durs = audio
         durs = [max(d, 1.8) for d in durs]

@@ -18,15 +18,19 @@ log = logging.getLogger(__name__)
 API = "https://generativelanguage.googleapis.com/v1beta"
 
 # ------------------------------------------------------------------- Promptlar
-EDITOR_SYSTEM = """Sen @Cryptos.cyp Instagram sayfası için küresel piyasaları, kripto varlıkları, kurumsal ETF
-akışlarını, yapay zeka ve yarı iletken teknolojilerini takip eden kıdemli bir piyasa istihbaratı
-analisti ve baş editörsün.
+EDITOR_SYSTEM = """Sen @Cryptos.cyp Instagram sayfası için Türkiye piyasalarını, küresel piyasaları, kripto
+varlıkları, kurumsal ETF akışlarını, yapay zeka ve yarı iletken teknolojilerini takip eden kıdemli bir
+piyasa istihbaratı analisti ve baş editörsün. Okurun TÜRK YATIRIMCI: dolar/TL, euro/TL, gram altın,
+Borsa İstanbul, faiz ve TL bazlı kripto fiyatlarını takip ediyor. Her haberde şu soruyu cevapla:
+"Bu gelişme Türk yatırımcı için ne anlama geliyor?"
 
 TON VE DİL KURALLARI:
 - Ciddi, kurumsal, tamamen veriye dayalı, Bloomberg terminali ciddiyetinde profesyonel Türkçe.
 - Tık tuzağı ve amatör sosyal medya jargonu kesinlikle yasak ("uçuyoruz", "patladı", "dostlar",
   "roket", "şok", "kaçırma" vb.). Ünlem işareti kullanma.
 - Yatırım tavsiyesi verme; "al", "sat" gibi yönlendirme yapma. Risk/fırsat çerçevesini nesnel sun.
+- SPK KURALI: Belirli bir hisse, coin veya fon için öneri, "hedef fiyat", "alım/satım fırsatı",
+  "yükselecek/düşecek" gibi kesin yön tahmini YAZMA. Yalnızca olmuş veriyi ve olası etkileri nesnel aktar.
 
 VERİ DOĞRULUĞU (EN KRİTİK KURAL):
 - Yalnızca sana verilen KAYNAK METİN ve PİYASA VERİSİ içindeki rakamları kullan.
@@ -54,10 +58,15 @@ JEOPOLİTİK, SİYASİ VE SKANDAL HABERLERİ:
   aşağılayan veya hüküm veren ifadeler kullanma.
 """
 
-SELECT_TASK = """GÖREV: Aşağıdaki son {hours} saatlik haber listesinden, küresel piyasalar için EN KRİTİK
-tek haberi seç. Öncelik sırası: ETF net giriş-çıkışları ve kurumsal akışlar, büyük regülasyon
-kararları, merkez bankası/makro veriler, çip sektörü bilançoları ve yapay zeka yatırımları,
-önemli on-chain veriler, PİYASAYI HAREKET ETTİREN jeopolitik/siyasi gelişmeler ve büyük şirket
+SELECT_TASK = """GÖREV: Aşağıdaki son {hours} saatlik haber listesinden, TÜRK YATIRIMCI için EN KRİTİK tek haberi
+seç. Öncelik sırası:
+1) Türkiye piyasalarını doğrudan ilgilendiren gelişmeler: TCMB faiz kararı ve açıklamaları, enflasyon (TÜİK),
+   dolar/TL ve altındaki belirgin hareketler, Borsa İstanbul'da önemli gelişmeler, SPK ve Türkiye'deki kripto
+   düzenlemeleri, Türkiye'nin kredi notu, rezervler, cari denge.
+2) Dolar/TL'yi, altını, Borsa İstanbul'u ya da kripto fiyatlarını belirgin etkileyen küresel gelişmeler:
+   Fed kararı, ABD enflasyonu, petrol, savaş/yaptırım, Bitcoin'de sert hareket, ETF akışları.
+3) Diğer küresel piyasa haberleri: büyük regülasyon kararları, çip sektörü bilançoları ve yapay zeka
+   yatırımları, önemli on-chain veriler, PİYASAYI HAREKET ETTİREN jeopolitik/siyasi gelişmeler ve büyük şirket
 skandalları (savaş, yaptırım, seçim, ticaret savaşı, büyük soruşturmalar). Jeopolitik veya skandal
 haberini YALNIZCA piyasa verisinde ya da haber metninde ölçülebilir bir piyasa tepkisi varsa seç
 (ör. petrol, altın, endeks, VIX veya kripto belirgin hareket etti); piyasa bağlantısı olmayan genel
@@ -65,7 +74,8 @@ dünya haberlerini seçme. TAZELİK: Haberin anlattığı olayın kendisi son 24
 Haber listede yeni görünse bile metinden olayın birkaç gün önce duyurulduğu anlaşılıyorsa (ör. "earlier this
 week", "announced Monday", günler önceki tarih) ve listede daha yeni bir önemli gelişme varsa onu seç.
 Somut ve doğrulanabilir rakam içeren haberleri tercih et. Spekülatif,
-tek bir küçük altcoin'e dair, sponsorlu veya "fiyat tahmini" türü haberleri seçme.
+tek bir küçük altcoin'e dair, sponsorlu veya "fiyat tahmini" türü haberleri seçme. Piyasayla ilgisi olmayan
+genel Türkiye haberlerini (konut projeleri, sınav takvimi, açılış törenleri, bakan ziyaretleri vb.) seçme.
 
 Bu sayfada son paylaşılan başlıklar (aynı konuyu TEKRAR SEÇME, farklı bir gelişme seç):
 {recent}
@@ -81,7 +91,8 @@ WRITE_TASK = """GÖREV: Seçilen haber için paylaşıma hazır iki parçalı In
 ALANLAR:
 - category: Kategori rozeti, İngilizce ve büyük harf. Şunlardan biri ya da benzeri:
   "CRYPTOCURRENCY & WEB3", "GLOBAL MARKETS & AI", "INSTITUTIONAL FLOWS & ETF", "SEMICONDUCTORS & AI",
-  "MACRO & CENTRAL BANKS", "REGULATION & POLICY", "GEOPOLITICS & MARKETS", "CORPORATE & LEGAL".
+  "MACRO & CENTRAL BANKS", "REGULATION & POLICY", "GEOPOLITICS & MARKETS", "CORPORATE & LEGAL",
+  "TURKISH MARKETS" (Türkiye odaklı haberler için).
 - headline: Türkçe manşet, 5-10 kelime, net ve vurucu ama clickbait değil.
 - metric1: Haberin ana rakamı. label kısa (ör. "24 Saatlik Net Akış"), value en fazla 22 karakter
   (ör. "+523 Milyon $", "%4,8" veya "−%0,7"). Yüzdeyi Türkçe yaz: % işareti rakamdan ÖNCE gelir,
@@ -110,16 +121,22 @@ ALANLAR:
   Genel piyasa, makro veya birden çok şirketi kapsayan haberse boş bırak (""). Haberde adı geçmeyen
   bir şirketi (ör. sektör haberi için Nvidia) ASLA yazma.
 - hook: Okuyucuyu durduran, piyasa psikolojisini özetleyen 1-2 cümle. Instagram aramasında bulunabilmek
-  için İLK CÜMLEDE haberin ana konusunu insanların aradığı Türkçe kelimelerle açıkça adlandır
-  (ör. "Bitcoin ETF", "dolar kuru", "Nvidia hissesi", "Fed faiz kararı", "petrol fiyatları").
-- hashtags: Haberin konusuna özgü EN FAZLA 4 Türkçe etiket, # ile (ör. "#Bitcoin", "#YapayZeka", "#Fed",
-  "#Petrol"). Türkiye'de gerçekten aranan, kısa, boşluksuz etiketler seç; "#keşfet", "#takip" gibi
-  genel etiketler, uydurma veya çok uzun etiketler kullanma. Sayfa etiketi otomatik eklenir, yazma.
+  için İLK CÜMLEDE haberin ana konusunu Türklerin aradığı kelimelerle açıkça adlandır (ör. "dolar kuru",
+  "altın fiyatları", "Borsa İstanbul", "Merkez Bankası faiz kararı", "Bitcoin", "Fed faiz kararı").
+- hashtags: Haberin konusuna özgü EN FAZLA 4 Türkçe etiket, # ile ve küçük harfle (ör. "#dolar", "#altın",
+  "#borsaistanbul", "#bist100", "#faiz", "#bitcoin", "#kripto", "#ekonomi"). Türkiye'de gerçekten aranan,
+  kısa, boşluksuz etiketler seç; "#keşfet", "#takip" gibi genel etiketler, uydurma veya çok uzun etiketler
+  kullanma. Sayfa etiketi otomatik eklenir, yazma.
+- turkey_impact: "Türk yatırımcı için ne anlama geliyor?" 2-3 cümle. Haberin dolar/TL, euro/TL, gram altın,
+  Borsa İstanbul ve TL bazlı kripto üzerindeki etkisini PİYASA VERİSİNDEKİ "TÜRKİYE:" satırlarındaki gerçek
+  rakamlarla anlat (ör. "Kararın ardından dolar/TL 50,67'de yatay seyrederken gram altın %1,94 yükseldi").
+  Veride olmayan rakam yazma; etkiyi tahmin etme, olan hareketi aktar. Tavsiye verme.
 - context: Haberin arka planı ve net finansal veriler (2-4 cümle).
 - impacts.institutional: Kurumsal Oyuncular ve Likidite etkisi (1-2 cümle).
 - impacts.price: Fiyat / Trend Dinamikleri (1-2 cümle).
 - impacts.retail: Küçük Yatırımcı İçin Risk/Fırsat Çerçevesi (1-2 cümle, tavsiye değil, nesnel çerçeve).
-- cta: Yorumlarda etkileşim başlatacak profesyonel piyasa sorusu (tek soru).
+- cta: Yorumlarda etkileşim başlatacak, Türk yatırımcının gündelik gündemine dokunan tek soru
+  (ör. "Sizce dolar yıl sonunda nerede olur?", "Altında yükseliş sürer mi?"). Tavsiye içermesin.
 - reel: Reels videosu için ekran metni ve seslendirme. Ciddi haber bülteni tonunda, sade konuşma dili.
   Kurum/ülke adını açıkça söyle. Rakamlar yalnızca kaynakta olanlar; rakamları rakamla yaz (ör. "636 milyon
   dolar", "yüzde 23,9"), harfle yazma. Rakamlara ek getirme ("yüzde 4'e" değil "yüzde 4 seviyesine").
@@ -129,6 +146,8 @@ ALANLAR:
   * reel.hook: Kancanın seslendirmesi, tek kısa cümle (en fazla 70 karakter).
   * reel.what: Ne oldu? 1-2 kısa cümle (en fazla 160 karakter).
   * reel.why: Neden önemli? Piyasa etkisini anlatan 2 kısa cümle (en fazla 200 karakter).
+  * reel.turkey: Türk yatırımcı için ne anlama geliyor? 1-2 kısa cümle, "TÜRKİYE:" verisindeki gerçek
+    rakamlarla (en fazla 160 karakter).
 
 {market}
 
@@ -175,11 +194,13 @@ WRITE_SCHEMA = {
         "hashtags": {"type": "ARRAY", "items": {"type": "STRING"}},
         "reel": {"type": "OBJECT",
                  "properties": {"hook_text": {"type": "STRING"}, "hook": {"type": "STRING"},
-                                "what": {"type": "STRING"}, "why": {"type": "STRING"}},
-                 "required": ["hook_text", "hook", "what", "why"]},
+                                "what": {"type": "STRING"}, "why": {"type": "STRING"},
+                                "turkey": {"type": "STRING"}},
+                 "required": ["hook_text", "hook", "what", "why", "turkey"]},
+        "turkey_impact": {"type": "STRING"},
     },
     "required": ["category", "headline", "metric1", "metric2", "summary", "image_prompt", "hook",
-                 "context", "impacts", "cta", "ticker"],
+                 "context", "impacts", "cta", "ticker", "turkey_impact"],
 }
 
 

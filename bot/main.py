@@ -13,7 +13,7 @@ import os
 import re
 import sys
 from pathlib import Path
-from datetime import datetime, timedelta, timezone
+from datetime import date, datetime, timedelta, timezone
 from zoneinfo import ZoneInfo
 
 from . import card, config, sources, validate, writer
@@ -120,7 +120,7 @@ _BANNED_TAGS = {"#keşfet", "#kesfet", "#explore", "#takip", "#follow", "#fyp", 
 
 def _category_key(category: str) -> str:
     c = (category or "").upper()
-    for key, words in (("ETF", ["ETF", "FLOWS"]), ("SEMICONDUCTOR", ["SEMICONDUCTOR", "AI"]),
+    for key, words in (("TURKEY", ["TURK", "TÜRK", "BIST", "TCMB"]), ("ETF", ["ETF", "FLOWS"]), ("SEMICONDUCTOR", ["SEMICONDUCTOR", "AI"]),
                        ("REGULATION", ["REGULATION", "POLICY", "LEGAL"]), ("GEOPOLITICS", ["GEOPOLITIC"]),
                        ("MACRO", ["MACRO", "CENTRAL", "GLOBAL MARKETS"]), ("CRYPTO", ["CRYPTO", "WEB3"])):
         if any(w in c for w in words):
@@ -144,18 +144,26 @@ def build_hashtags(post: dict) -> str:
 
 def build_caption(post: dict) -> str:
     imp = post["impacts"]
-    return "\n".join([
+    lines = [
         post["hook"].strip(), "",
         post["context"].strip(), "",
+    ]
+    turkey = (post.get("turkey_impact") or "").strip()
+    if turkey:
+        lines += ["🇹🇷 TÜRK YATIRIMCI İÇİN NE ANLAMA GELİYOR?", turkey, ""]
+    lines += [
         "PİYASA ETKİSİ",
         f"1. Kurumsal Oyuncular ve Likidite: {imp['institutional'].strip()}",
         f"2. Fiyat / Trend Dinamikleri: {imp['price'].strip()}",
         f"3. Küçük Yatırımcı İçin Risk/Fırsat Çerçevesi: {imp['retail'].strip()}", "",
         post["cta"].strip(), "",
         f"Kaynak: {post['source_name']}",
-        config.DISCLAIMER, "",
-        build_hashtags(post),
-    ])
+        config.DISCLAIMER,
+    ]
+    if post.get("voiced") and config.ELEVENLABS_ATTRIBUTION:
+        lines.append(config.ATTRIBUTION_LINE)
+    lines += ["", build_hashtags(post)]
+    return "\n".join(lines)
 
 
 def build_markdown(post: dict) -> str:
@@ -195,7 +203,8 @@ def _set_output(key: str, value: str) -> None:
             f.write(f"{key}={value}\n")
 
 
-def _save_outputs(post: dict, image, now: datetime, story_image=None, extra_images=None, video=None) -> None:
+def _save_outputs(post: dict, image, now: datetime, story_image=None, extra_images=None, video=None,
+                  cover=None) -> None:
     stamp = now.strftime("%Y%m%d-%H%M")
     config.POSTS_DIR.mkdir(exist_ok=True)
     config.OUTPUT_DIR.mkdir(exist_ok=True)
@@ -218,6 +227,11 @@ def _save_outputs(post: dict, image, now: datetime, story_image=None, extra_imag
     if video is not None:
         post["video_path"] = str(Path(video).relative_to(config.ROOT)) if Path(video).is_absolute() else str(video)
         images.append(post["video_path"])
+    if cover is not None:
+        cover_rel = f"posts/{stamp}-cover.jpg"
+        cover.save(config.ROOT / cover_rel, "JPEG", quality=config.JPEG_QUALITY, optimize=True)
+        post["cover_path"] = cover_rel
+        images.append(cover_rel)
     post["created_at"] = now.isoformat()
     (config.OUTPUT_DIR / "post.json").write_text(json.dumps(post, ensure_ascii=False, indent=2), encoding="utf-8")
     (config.OUTPUT_DIR / "caption.txt").write_text(post["caption"], encoding="utf-8")
@@ -242,7 +256,7 @@ def prepare() -> int:
     """09:00: güncel kur HİKÂYESİ + (salı-cumartesi) dünün KAPANIŞ ÖZETİ gönderisi.
     Pazar/pazartesi sabahı ve diğer saatlerde gönderi olarak haber paylaşılır."""
     now = datetime.now(TZ)
-    if now.date().isoformat() > config.END_DATE:
+    if config.END_DATE and now.date().isoformat() > config.END_DATE:
         log.info("Proje %s tarihinde sona erdi; paylaşım yapılmıyor.", config.END_DATE)
         _set_output("skip", "true")
         return 0
@@ -260,7 +274,18 @@ def prepare() -> int:
             built = None
         if built:
             post, image = built
-            _save_outputs(post, image, now, story_image)
+            video = cover = None
+            if config.CLOSE_REEL_ENABLED:   # salı-cumartesi kapanış özeti SESSİZ Reels (kredi harcamaz)
+                try:
+                    config.POSTS_DIR.mkdir(exist_ok=True)
+                    made = rates.build_close_reel(post["rows"], date.fromisoformat(post["close_day"]), now,
+                                                  config.POSTS_DIR / f"{now:%Y%m%d-%H%M}-close.mp4")
+                except Exception as exc:
+                    log.warning("Kapanış Reels'i üretilemedi, görsel gönderiyle devam: %s", exc)
+                    made = None
+                if made:
+                    video, cover = made
+            _save_outputs(post, image, now, story_image, video=video, cover=cover)
             print(post["caption"])
             return 0
         log.info("Bu sabah kapanış özeti yok; gönderi olarak haber paylaşılacak.")
@@ -279,9 +304,12 @@ def prepare() -> int:
     from . import reels
     if reels.is_reel_slot(now) and card.LAST_BACKGROUND is not None:
         config.POSTS_DIR.mkdir(exist_ok=True)
+        voiced = reels.is_voiced_slot(now) or os.getenv("POST_FORMAT") == "reels"
         video = reels.render_video(post, card.LAST_BACKGROUND, slides.LAST_CHART,
-                                   config.POSTS_DIR / f"{now:%Y%m%d-%H%M}-reel.mp4",
-                                   voiced=reels.is_voiced_slot(now) or os.getenv("POST_FORMAT") == "reels")
+                                   config.POSTS_DIR / f"{now:%Y%m%d-%H%M}-reel.mp4", voiced=voiced)
+        if video and voiced and reels.LAST_VOICED:
+            post["voiced"] = True
+            post["caption"] = build_caption(post)   # seslendirme atfı (ayar açıksa) açıklamaya eklenir
     if story_image is None and config.NEWS_STORY_ENABLED:
         try:
             story_image = slides.build_post_story(image, has_more=bool(extras))
@@ -379,7 +407,7 @@ def publish(url: str) -> int:
         log.info("DRY_RUN açık: Instagram'a gönderilmedi. Gönderi: %s | Hikâye: %s", feed_url, story_url)
         return 0
     story_done = False
-    if url.endswith("/") and post.get("video_path"):
+    if url.endswith("/") and post.get("video_path") and post.get("type") != "rates":
         try:  # Reels günlerinde hikâyede de hareketli video gösterilir
             instagram.publish_video_story(url + Path(post["video_path"]).name)
             story_done = True
@@ -393,7 +421,8 @@ def publish(url: str) -> int:
     media_id = None
     if url.endswith("/") and post.get("video_path"):
         try:
-            cover = url + Path(post["story_image_path"]).name if post.get("story_image_path") else None
+            cover_rel = post.get("cover_path") or post.get("story_image_path")
+            cover = url + Path(cover_rel).name if cover_rel else None
             media_id = instagram.publish_reel(url + Path(post["video_path"]).name, post["caption"], cover)
         except Exception as exc:  # Reels başarısız olursa kaydırmalı gönderiyle devam
             log.warning("Reels yayınlanamadı, kaydırmalı gönderiyle devam ediliyor: %s", exc)

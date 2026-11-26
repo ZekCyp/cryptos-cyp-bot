@@ -205,9 +205,13 @@ def _background(size: tuple[int, int], seed: int) -> Image.Image:
 
 
 def render_table(rows: list[dict], *, size: tuple[int, int], badge: str, title: str, subtitle: str,
-                 stamp: str, note: str, src: str, top: int, bottom: int, seed: int) -> Image.Image:
+                 stamp: str, note: str, src: str, top: int, bottom: int, seed: int,
+                 show: int | None = None, right: int | None = None, background=None) -> Image.Image:
+    """show: yalnızca ilk N satırı çiz (yerleşim tüm satırlara göre sabit kalır, animasyon için).
+    right: sağ kenar boşluğu (Reels'te beğeni/yorum simgelerine yer bırakmak için)."""
     w, h = size
-    img = _background(size, seed)
+    xr = w - (M if right is None else right)
+    img = background.copy() if background is not None else _background(size, seed)
     layer = Image.new("RGBA", size, (0, 0, 0, 0))
     d = ImageDraw.Draw(layer)
 
@@ -218,13 +222,14 @@ def render_table(rows: list[dict], *, size: tuple[int, int], badge: str, title: 
     card.draw_spaced(d, (M + 24, top + 12), badge, f_badge, card.CYAN + (255,), 2.4)
     if stamp:
         f_date = card.font("Medium", 22)
-        d.text((w - M - d.textlength(stamp, font=f_date), top + 13), stamp, font=f_date, fill=card.GREY + (255,))
+        d.text((xr - d.textlength(stamp, font=f_date), top + 13), stamp, font=f_date, fill=card.GREY + (255,))
 
     y = top + 50 + 56
     f_title = card.font("ExtraBold", 84)
     for line in title.split("\n"):
         d.text((M, y), line, font=f_title, fill=card.WHITE + (255,))
         y += 98
+    y += 12
     d.text((M, y), subtitle, font=card.font("SemiBold", 34), fill=card.CYAN + (255,))
     y += 66
 
@@ -233,9 +238,9 @@ def render_table(rows: list[dict], *, size: tuple[int, int], badge: str, title: 
     f_chg = card.font("Bold", 26)
     pill_w = max(d.textlength(tr_pct(r["change"]), font=f_chg) for r in rows) + 28   # hizalı sütun
     row_h = min(150, (footer_y - 90 - y) // max(n, 1))
-    for i, r in enumerate(rows):
+    for i, r in enumerate(rows[:len(rows) if show is None else show]):
         t = y + i * row_h
-        d.rounded_rectangle((M, t, w - M, t + row_h - 14), radius=16, fill=card.PANEL + (210,),
+        d.rounded_rectangle((M, t, xr, t + row_h - 14), radius=16, fill=card.PANEL + (210,),
                             outline=(120, 170, 220, 45), width=1)
         mid = t + (row_h - 14) // 2
         d.text((M + 28, mid - 30), r["code"], font=card.font("ExtraBold", 34), fill=card.WHITE + (255,))
@@ -244,7 +249,7 @@ def render_table(rows: list[dict], *, size: tuple[int, int], badge: str, title: 
         color = card.GREEN if up else card.RED if down else card.GREY
         chg = tr_pct(r["change"])
         cw = d.textlength(chg, font=f_chg)
-        pill = (w - M - 28 - pill_w, mid - 22, w - M - 28, mid + 22)
+        pill = (xr - 28 - pill_w, mid - 22, xr - 28, mid + 22)
         d.rounded_rectangle(pill, radius=22, fill=color + (36,), outline=color + (150,), width=1)
         d.text((pill[2] - 14 - cw, mid - 16), chg, font=f_chg, fill=color + (255,))
         f_val = card._fit(d, r["text"], "ExtraBold", 46, 30, pill[0] - 40 - (M + 300))
@@ -252,11 +257,11 @@ def render_table(rows: list[dict], *, size: tuple[int, int], badge: str, title: 
                font=f_val, fill=card.WHITE + (255,))
 
     d.text((M, footer_y - 64), note, font=card.font("Medium", 19), fill=card.DIM + (255,))
-    d.line([(M, footer_y - 26), (w - M, footer_y - 26)], fill=(120, 170, 220, 60), width=1)
+    d.line([(M, footer_y - 26), (xr, footer_y - 26)], fill=(120, 170, 220, 60), width=1)
     d.rectangle((M, footer_y + 6, M + 12, footer_y + 18), fill=card.CYAN + (255,))
     card.draw_spaced(d, (M + 26, footer_y), config.SIGNATURE, card.font("Bold", 24), card.WHITE + (255,), 1.6)
     f_src = card.font("Medium", 20)
-    d.text((w - M - d.textlength(src, font=f_src), footer_y + 4), src, font=f_src, fill=card.DIM + (255,))
+    d.text((xr - d.textlength(src, font=f_src), footer_y + 4), src, font=f_src, fill=card.DIM + (255,))
     return Image.alpha_composite(img, layer).convert("RGB")
 
 
@@ -308,5 +313,97 @@ def build_close_post(now: datetime) -> tuple[dict, Image.Image] | None:
         "source_name": "Yahoo Finance",
         "source_link": "",
         "source_title": f"Kapanış özeti {day.isoformat()}",
+        "close_day": day.isoformat(),
     }
     return post, image
+
+
+# ------------------------------------------------------- Sessiz kapanış Reels'i
+REEL_TOP, REEL_BOTTOM, REEL_RIGHT = 250, 430, 120   # Instagram arayüzünün kapattığı alanlar boş kalır
+CLOSE_INTRO, CLOSE_STEP, CLOSE_HOLD, CLOSE_OUTRO = 1.2, 0.55, 5.0, 3.0
+
+
+def _close_outro(base: Image.Image) -> Image.Image:
+    img = Image.alpha_composite(base.convert("RGBA"), Image.new("RGBA", base.size, (4, 10, 20, 238)))
+    d = ImageDraw.Draw(img)
+    w, h = base.size
+    cy = h // 2 - 240
+    f = card.font("SemiBold", 42)
+    for txt in ("Borsa haberleri için", "bizi takip edin"):
+        d.text(((w - d.textlength(txt, font=f)) // 2, cy), txt, font=f, fill=card.GREY + (255,))
+        cy += 60
+    cy += 30
+    fh = card.font("ExtraBold", 84)
+    d.text(((w - d.textlength("@cryptos.cyp", font=fh)) // 2, cy), "@cryptos.cyp", font=fh,
+           fill=card.WHITE + (255,))
+    cy += 130
+    cta = "Takip et  ·  Kaydet  ·  Paylaş"
+    fc = card.font("Bold", 38)
+    tw = d.textlength(cta, font=fc)
+    d.rounded_rectangle(((w - tw) // 2 - 36, cy, (w + tw) // 2 + 36, cy + 84), radius=42,
+                        fill=(14, 46, 62, 250), outline=card.CYAN + (255,), width=2)
+    d.text(((w - tw) // 2, cy + 20), cta, font=fc, fill=card.CYAN + (255,))
+    return img.convert("RGB")
+
+
+def build_close_reel(rows: list[dict], day: date, now: datetime, out_path):
+    """Kapanış tablosunun satırları tek tek beliren SESSİZ dikey videosu (ElevenLabs kredisi harcamaz).
+    Döner: (video_yolu, kapak_görseli) ya da başarısızsa None."""
+    import subprocess
+    from pathlib import Path
+    from . import reels
+
+    ffmpeg = reels._ffmpeg()
+    if not ffmpeg:
+        log.warning("ffmpeg bulunamadı, kapanış Reels'i üretilemiyor.")
+        return None
+    size = (reels.VW, reels.VH)
+    seed = int(now.strftime("%Y%m%d")) + 7
+    bg = _background(size, seed)
+    kw = dict(size=size, badge="PİYASA KAPANIŞ ÖZETİ", title="DÜNÜ NASIL\nKAPATTIK?",
+              subtitle=_day_title(day) + " KAPANIŞI", stamp="",
+              note="Günlük kapanış · değişim önceki işlem gününe göre · *Ons bazlı",
+              src="Yahoo Finance", top=REEL_TOP, bottom=REEL_BOTTOM, right=REEL_RIGHT, seed=seed, background=bg)
+    n = len(rows)
+    stages = [render_table(rows, show=k, **kw) for k in range(n + 1)]
+    outro = _close_outro(stages[-1])
+    reveal_end = CLOSE_INTRO + n * CLOSE_STEP
+    total = reveal_end + CLOSE_HOLD + CLOSE_OUTRO
+    fade = 0.35
+
+    def frame(t: float) -> Image.Image:
+        if t >= reveal_end + CLOSE_HOLD:
+            a = min(1.0, (t - reveal_end - CLOSE_HOLD) / fade)
+            img = Image.blend(stages[-1], outro, a) if a < 1 else outro
+        elif t < CLOSE_INTRO:
+            img = stages[0]
+        else:
+            k = min(n, int((t - CLOSE_INTRO) / CLOSE_STEP) + 1)
+            a = min(1.0, (t - CLOSE_INTRO - (k - 1) * CLOSE_STEP) / fade)
+            img = Image.blend(stages[k - 1], stages[k], a) if a < 1 else stages[k]
+        z = 1.0 + 0.03 * (t / total)            # hafif yakınlaşma: kare durağan görünmesin
+        if z > 1.001:
+            cw, ch = int(size[0] / z), int(size[1] / z)
+            x0, y0 = (size[0] - cw) // 2, (size[1] - ch) // 2
+            img = img.crop((x0, y0, x0 + cw, y0 + ch)).resize(size, Image.BILINEAR)
+        return img
+
+    out_path = Path(out_path)
+    cmd = [ffmpeg, "-y", "-loglevel", "error",
+           "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{size[0]}x{size[1]}", "-r", str(reels.FPS), "-i", "-",
+           "-f", "lavfi", "-t", f"{total:.2f}", "-i", "anullsrc=channel_layout=stereo:sample_rate=44100",
+           "-c:v", "libx264", "-preset", "medium", "-crf", "23", "-pix_fmt", "yuv420p", "-profile:v", "high",
+           "-movflags", "+faststart", "-c:a", "aac", "-b:a", "64k", "-shortest", str(out_path)]
+    try:
+        proc = subprocess.Popen(cmd, stdin=subprocess.PIPE)
+        for i in range(int(total * reels.FPS)):
+            proc.stdin.write(frame(i / reels.FPS).tobytes())
+        proc.stdin.close()
+        if proc.wait(timeout=300) != 0:
+            raise RuntimeError(f"ffmpeg çıkış kodu {proc.returncode}")
+    except Exception as exc:
+        log.warning("Kapanış Reels'i üretilemedi: %s", exc)
+        return None
+    log.info("Kapanış Reels'i hazır: %s (%.1f sn, %.1f MB, sessiz)", out_path.name, total,
+             out_path.stat().st_size / 1e6)
+    return out_path, stages[-1]

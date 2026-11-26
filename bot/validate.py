@@ -11,6 +11,9 @@ BANNED = [
     "uçuyoruz", "uçuş", "patladı", "patlama yaptı", "dostlar", "arkadaşlar", "roket", "to the moon",
     "moon", "kaçırma", "şok", "inanılmaz", "bomba", "çakıldı", "efsane", "çılgın", "ateş aldı",
     "garanti", "kesin kazanç", "zengin ol", "fırsatı kaçırmayın", "lambo",
+    # SPK: yatırım tavsiyesi çağrıştıran ifadeler
+    "hedef fiyat", "alım fırsatı", "satış fırsatı", "kesin yükselir", "kesin düşer", "kaçırmayın",
+    "satın alın", "toplayın", "portföyünüze ekleyin", "yatırım fırsatı",
 ]
 
 _NUM_RE = re.compile(r"\d[\d.,]*\d|\d")
@@ -110,7 +113,7 @@ def check_post(post: dict, source_text: str) -> list[str]:
     text_fields = " \n".join([
         post["headline"], post["metric1"]["label"], post["metric1"]["value"],
         post["metric2"]["label"], post["metric2"]["value"], post["summary"], post["hook"],
-        post["context"], *post["impacts"].values(), post["cta"],
+        post["context"], *post["impacts"].values(), post["cta"], post.get("turkey_impact", ""),
         *(post.get("reel") or {}).values(),
     ])
     bad_nums = unverified_numbers(text_fields, source_text)
@@ -123,8 +126,8 @@ def check_post(post: dict, source_text: str) -> list[str]:
     reel = post.get("reel") or {}
     if reel and len((reel.get("hook_text") or "").split()) > 8:
         errors.append("reel.hook_text en fazla 7 kelime olmalı.")
-    if reel and sum(len(reel.get(k) or "") for k in ("hook", "what", "why")) > 520:
-        errors.append("Reels seslendirmesi çok uzun (hook+what+why en fazla ~450 karakter).")
+    if reel and sum(len(reel.get(k) or "") for k in ("hook", "what", "why", "turkey")) > 680:
+        errors.append("Reels seslendirmesi çok uzun (hook+what+why+turkey en fazla ~600 karakter).")
     if len(post.get("caption", "")) > 2150:
         errors.append("Instagram açıklaması 2200 karakter sınırını aşıyor.")
     return errors
