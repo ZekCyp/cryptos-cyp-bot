@@ -1,0 +1,25 @@
+name: Kaynak testi (geçici)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python tools/feedcheck.py
+      - name: Sonucu kaydet
+        run: |
+          git config user.name "cryptos-bot"
+          git config user.email "cryptos-bot@users.noreply.github.com"
+          git add state/feed_status.json
+          git commit -qm "kaynak testi sonucu" && git pull -q --rebase && git push -q
