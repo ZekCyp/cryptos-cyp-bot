@@ -1,0 +1,128 @@
+{
+  "checked_at": "2026-11-26T12:13:25.469033+00:00",
+  "feeds": {
+    "AA Ekonomi": {
+      "url": "https://www.aa.com.tr/tr/rss/default?cat=ekonomi",
+      "http": 200,
+      "items": 30,
+      "first_title": "Merkez Bankası rezervleri 142 milyar dolar oldu",
+      "has_date": true,
+      "summary_len": 181,
+      "article_chars": 987
+    },
+    "Bloomberg HT": {
+      "url": "https://www.bloomberght.com/rss",
+      "http": 200,
+      "items": 50,
+      "first_title": "Yabancıların Türk bankalarıyla TL türev işlemlerinde sert geri çekilme",
+      "has_date": true,
+      "summary_len": 141,
+      "article_chars": 665
+    },
+    "NTV Ekonomi": {
+      "url": "https://www.ntv.com.tr/ekonomi.rss",
+      "http": 200,
+      "items": 20,
+      "first_title": "TÜBADEF Yılın Ekonomi Yazarı Ödülü Abdullah Tolu'ya layık görüldü",
+      "has_date": true,
+      "summary_len": 139,
+      "article_chars": 1115
+    },
+    "TRT Haber Ekonomi": {
+      "url": "https://www.trthaber.com/ekonomi_articles.rss",
+      "http": 200,
+      "items": 60,
+      "first_title": "Batarya depolama kapasitesinde hedef 1 gigavatsaat",
+      "has_date": true,
+      "summary_len": 255,
+      "article_chars": 4290
+    },
+    "Habertürk Ekonomi": {
+      "url": "https://www.haberturk.com/rss/ekonomi.xml",
+      "http": 200,
+      "items": 30,
+      "first_title": "\"106 bin 914 konutumuzun yapımına başladık\"",
+      "has_date": true,
+      "summary_len": 478,
+      "article_chars": 6035
+    },
+    "Investing TR": {
+      "url": "https://tr.investing.com/rss/news.rss",
+      "http": 200,
+      "items": 10,
+      "first_title": "KT Sukuk Varlık Kiralama, 565,2 milyon TL itfa ve kupon ödemesi yaptı",
+      "has_date": true,
+      "summary_len": 0,
+      "article_chars": 0
+    },
+    "Dünya": {
+      "url": "https://www.dunya.com/rss?dunya",
+      "http": 200,
+      "items": 25,
+      "first_title": "2027'de KPSS Ortaöğretim ve Ön Lisans sınavı var mı?",
+      "has_date": true,
+      "summary_len": 260,
+      "article_chars": 0
+    },
+    "Ekonomim": {
+      "url": "https://www.ekonomim.com/export/rss",
+      "http": 200,
+      "items": 50,
+      "first_title": "OPEC+ 2027 planını masaya yatırıyor: Üretim kotası değişecek mi?",
+      "has_date": true,
+      "summary_len": 323,
+      "article_chars": 0
+    },
+    "Para Analiz": {
+      "url": "https://www.paraanaliz.com/feed/",
+      "http": 404,
+      "items": 0
+    },
+    "CoinTürk": {
+      "url": "https://coin-turk.com/feed",
+      "http": 200,
+      "items": 5,
+      "first_title": "Coinbase, 12 kripto işlem çiftinde alım satımı durdurdu",
+      "has_date": true,
+      "summary_len": 527,
+      "article_chars": 3176
+    },
+    "Kriptokoin": {
+      "url": "https://kriptokoin.com/feed/",
+      "http": 522,
+      "items": 0
+    },
+    "BloombergHT Piyasalar": {
+      "url": "https://www.bloomberght.com/rss/piyasalar",
+      "http": 404,
+      "items": 0
+    }
+  },
+  "quotes": {
+    "USDTRY=X": {
+      "symbol": "USDTRY=X",
+      "last": 50.6703987121582,
+      "change": 0.006904068235380478,
+      "name": "USD/TRY"
+    },
+    "EURTRY=X": {
+      "symbol": "EURTRY=X",
+      "last": 55.74673080444336,
+      "change": 0.3668685999571153,
+      "name": "EUR/TRY"
+    },
+    "XU100.IS": {
+      "symbol": "XU100.IS",
+      "last": 10823.0,
+      "change": 1.5700498476965086,
+      "name": "BIST 100"
+    },
+    "GC=F": {
+      "symbol": "GC=F",
+      "last": 3598.60009765625,
+      "change": 1.7761199151784313,
+      "name": "Gold Dec 26"
+    },
+    "BTC-TRY": null
+  }
+}
