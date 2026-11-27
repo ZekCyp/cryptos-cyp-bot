@@ -1348,5 +1348,15 @@
     "media_id": "18097991513692787",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-27T15:08:58.270186+00:00",
+    "link": "https://www.trthaber.com/haber/ekonomi/irak-turkiye-petrol-boru-hatti-yeniden-faaliyete-gececek-964663.html",
+    "title": "IrakTürkiye petrol boru hattı yeniden faaliyete geçecek",
+    "headline": "IRAK-TÜRKİYE PETROL BORU HATTI YENİDEN FAALİYETE GEÇİYOR",
+    "image": "posts/20261127-1801.jpg",
+    "media_id": "17922510690514307",
+    "type": "news",
+    "format": "reels"
   }
 ]
