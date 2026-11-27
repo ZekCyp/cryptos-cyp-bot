@@ -1328,5 +1328,15 @@
     "media_id": "17979669932934019",
     "type": "news",
     "format": "reels"
+  },
+  {
+    "ts": "2026-11-27T06:05:52.341632+00:00",
+    "link": "https://www.trthaber.com/haber/ekonomi/kamu-alacaklari-icin-gecikme-zammi-orani-dusuruldu-964606.html",
+    "title": "Kamu alacakları için gecikme zammı oranı düşürüldü",
+    "headline": "KAMU ALACAKLARINDA GECİKME ZAMMI VE TECİL FAİZİ İNDİRİLDİ",
+    "image": "posts/20261127-0901.jpg",
+    "media_id": "18187051786376400",
+    "type": "news",
+    "format": "post"
   }
 ]
